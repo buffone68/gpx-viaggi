@@ -6,126 +6,61 @@
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
 <style>
   :root{
-    --bg:#f6f7f9;
-    --text:#222;
-    --card: #fff;
-    --shadow: 0 6px 16px rgba(0,0,0,.08);
-    --shadow-hover: 0 10px 22px rgba(0,0,0,.14);
-    --radius: 14px;
-    --gap: 18px;
-    --size: 170px;       /* lato card; su mobile scende con media query */
+    --btn-bg:#3ca66b;       /* verdolino fisso */
+    --btn-bg-hover:#2f8c57;
+    --text:#fff;
+    --flag-w:16px; --flag-h:11px; /* più piccole */
   }
-  @media (max-width:560px){ :root{ --size: 150px; } }
-
-  *{box-sizing:border-box}
   body{
-    margin:0; background:var(--bg); color:var(--text);
+    margin:0; background:#f6f7f9;
     font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;
-    display:flex; min-height:100vh; align-items:center; justify-content:center;
+    display:flex; min-height:100vh;
+    align-items:center; justify-content:center;
   }
-  .wrap{ width:min(1000px,92vw); padding:24px; }
-  h1{margin:0 0 18px; text-align:center}
-
-  /* griglia */
+  .wrap{ width:min(700px,92vw); padding:16px; text-align:center; }
+  h1{margin:0 0 16px; color:#333; font-size:20px;}
   .grid{
-    display:grid;
-    grid-template-columns:repeat(auto-fit, minmax(var(--size),1fr));
-    gap:var(--gap);
+    display:flex; flex-direction:column; gap:8px;
   }
-
-  /* card/bottone */
   .trip{
-    text-decoration:none; color:inherit;
-    background:var(--card);
-    border-radius:var(--radius);
-    box-shadow:var(--shadow);
-    border: 1px solid rgba(0,0,0,.06);
-    overflow:hidden;
-    display:flex; flex-direction:column; align-items:center;
-    transition: transform .08s ease, box-shadow .2s ease, border-color .2s ease;
-    aspect-ratio:1/1; /* quadrata */
+    display:flex; align-items:center; gap:8px;
+    background:var(--btn-bg);
+    color:var(--text);
+    text-decoration:none;
+    padding:6px 10px;          /* molto più basso */
+    border-radius:6px;
+    font-weight:600;
+    font-size:13px;            /* testo più piccolo */
+    box-shadow:0 1px 3px rgba(0,0,0,.15);
+    transition:background .2s ease, transform .05s ease;
   }
-  .trip:hover{
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-hover);
-    border-color: rgba(0,0,0,.12);
-  }
+  .trip:hover{ background:var(--btn-bg-hover); transform:translateY(-1px); }
+  .trip:active{ transform:translateY(0); }
 
-  /* area icona mappa */
-  .thumb{
-    flex:1; width:100%;
-    display:flex; align-items:center; justify-content:center;
-    padding:16px;
-    background: linear-gradient(180deg, #ffffff 0%, #f1f3f7 100%);
-  }
-  .thumb .map-icon{
-    max-width:72%; max-height:72%;
-    display:block;
-    filter: drop-shadow(0 1px 1px rgba(0,0,0,.10));
-  }
-
-  /* barra meta con bandiera + testo */
-  .meta{
-    width:100%; padding:10px 12px;
-    border-top:1px solid rgba(0,0,0,.06);
-    display:flex; align-items:center; justify-content:center; gap:8px;
-    background:#fff;
-  }
-  .flag{
-    width:22px; height:15px; border-radius:2px;
-    box-shadow:0 0 2px rgba(0,0,0,.25);
+  .map-icon{
+    width:22px; height:auto;   /* ridotto */
     flex:0 0 auto;
   }
-  .label{
-    font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
-    max-width: calc(var(--size) - 60px);
-  }
-
-  /* Accenti colore per singolo paese (tinta leggera nel gradiente) */
-  .trip.namibia .thumb{ background: linear-gradient(180deg, #ffffff 0%, #eaf2ff 100%); }
-  .trip.uganda  .thumb{ background: linear-gradient(180deg, #ffffff 0%, #eaf9f0 100%); }
+  .flag{ width:var(--flag-w); height:var(--flag-h); border-radius:2px; }
+  .label{ flex:1; text-align:left; }
 </style>
 </head>
 <body>
   <div class="wrap">
     <h1>I miei viaggi</h1>
-
     <div class="grid">
 
-      <!-- Namibia -->
-      <a class="trip namibia" href="2025.07-Namibia.html" aria-label="Apri Namibia 2025">
-        <div class="thumb">
-          <!-- metti il tuo SVG/PNG locale -->
-          <img class="map-icon" src="media/icons/namibia.svg" alt="">
-        </div>
-        <div class="meta">
-          <img class="flag" src="https://flagcdn.com/w20/na.png" alt="Namibia">
-          <span class="label">Namibia 2025</span>
-        </div>
+      <a class="trip" href="2025.07-Namibia.html">
+        <img class="map-icon" src="media/icons/namibia.svg" alt="">
+        <img class="flag" src="https://flagcdn.com/w20/na.png" alt="Namibia">
+        <span class="label">Namibia 2025</span>
       </a>
 
-      <!-- Uganda -->
-      <a class="trip uganda" href="2024.10-Uganda.html" aria-label="Apri Uganda 2024">
-        <div class="thumb">
-          <img class="map-icon" src="media/icons/uganda.svg" alt="">
-        </div>
-        <div class="meta">
-          <img class="flag" src="https://flagcdn.com/w20/ug.png" alt="Uganda">
-          <span class="label">Uganda 2024</span>
-        </div>
+      <a class="trip" href="2024.10-Uganda-Scimpanzè.html">
+        <img class="map-icon" src="media/icons/uganda.svg" alt="">
+        <img class="flag" src="https://flagcdn.com/w20/ug.png" alt="Uganda">
+        <span class="label">Uganda 2024</span>
       </a>
-
-      <!-- Duplica per altri viaggi
-      <a class="trip italia" href="YYYY.MM-Italia.html" aria-label="Apri Italia YYYY">
-        <div class="thumb">
-          <img class="map-icon" src="media/icons/italy.svg" alt="">
-        </div>
-        <div class="meta">
-          <img class="flag" src="https://flagcdn.com/w20/it.png" alt="Italia">
-          <span class="label">Italia YYYY</span>
-        </div>
-      </a>
-      -->
 
     </div>
   </div>
