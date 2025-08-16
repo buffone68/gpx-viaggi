@@ -112,10 +112,12 @@ const endIconUrl = 'data:image/svg+xml;utf8,' + encodeURIComponent(
 /* =======================
    MAPPA + BASE LAYERS
    ======================= */
-
+  
+const map = L.map('map', { zoomControl: true });
+  
 map.fitBounds([
-  [-28.9, 11.5],   // sud-ovest
-  [-16.9, 25.3]    // nord-est
+  [-28.9, 11.5],   // sud-ovest Namibia
+  [-16.9, 25.3]    // nord-est Namibia
 ]);
 
 // OSM
