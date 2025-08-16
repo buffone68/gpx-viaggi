@@ -1,77 +1,133 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-  <meta charset="utf-8" />
-  <title>I miei viaggi</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="utf-8"/>
+<title>I miei viaggi</title>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<style>
+  :root{
+    --bg:#f6f7f9;
+    --text:#222;
+    --card: #fff;
+    --shadow: 0 6px 16px rgba(0,0,0,.08);
+    --shadow-hover: 0 10px 22px rgba(0,0,0,.14);
+    --radius: 14px;
+    --gap: 18px;
+    --size: 170px;       /* lato card; su mobile scende con media query */
+  }
+  @media (max-width:560px){ :root{ --size: 150px; } }
 
-  <style>
-    :root{
-      --btn-bg:#007bff;
-      --btn-bg-hover:#0056b3;
-      --flag-w:22px;
-      --flag-h:15px;
-      --icon-w:26px;
-      --icon-h:26px;
-    }
-    @media (max-width: 480px){
-      :root{
-        --flag-w:18px; --flag-h:12px;
-        --icon-w:22px; --icon-h:22px;
-      }
-    }
+  *{box-sizing:border-box}
+  body{
+    margin:0; background:var(--bg); color:var(--text);
+    font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;
+    display:flex; min-height:100vh; align-items:center; justify-content:center;
+  }
+  .wrap{ width:min(1000px,92vw); padding:24px; }
+  h1{margin:0 0 18px; text-align:center}
 
-    body{
-      margin:0; min-height:100vh;
-      display:flex; justify-content:center; align-items:center;
-      background:#f9f9f9;
-      font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;
-    }
-    .container{ text-align:center; padding:24px; }
-    h1{ margin-bottom:30px; color:#333; }
+  /* griglia */
+  .grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit, minmax(var(--size),1fr));
+    gap:var(--gap);
+  }
 
-    .btn{
-      display:inline-flex; align-items:center; gap:10px;
-      padding:12px 24px; margin:10px;
-      font-size:16px; font-weight:600; color:#fff;
-      background-color:var(--btn-bg);
-      border:none; border-radius:8px;
-      text-decoration:none; box-shadow:0 2px 6px rgba(0,0,0,.15);
-      transition:background-color .2s, transform .05s;
-    }
-    .btn:hover{ background-color:var(--btn-bg-hover); }
-    .btn:active{ transform:translateY(1px); }
+  /* card/bottone */
+  .trip{
+    text-decoration:none; color:inherit;
+    background:var(--card);
+    border-radius:var(--radius);
+    box-shadow:var(--shadow);
+    border: 1px solid rgba(0,0,0,.06);
+    overflow:hidden;
+    display:flex; flex-direction:column; align-items:center;
+    transition: transform .08s ease, box-shadow .2s ease, border-color .2s ease;
+    aspect-ratio:1/1; /* quadrata */
+  }
+  .trip:hover{
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-hover);
+    border-color: rgba(0,0,0,.12);
+  }
 
-    .btn img.flag{
-      width:var(--flag-w);
-      height:var(--flag-h);
-      border-radius:2px;
-      box-shadow:0 0 2px rgba(0,0,0,.25);
-      flex:0 0 auto;
-    }
-    /* icona mappa SENZA cornice */
-    .btn img.map-icon{
-      height:var(--flag-h);   /* allineata alla bandiera */
-      width:auto;
-      flex:0 0 auto;
-    }
-  </style>
+  /* area icona mappa */
+  .thumb{
+    flex:1; width:100%;
+    display:flex; align-items:center; justify-content:center;
+    padding:16px;
+    background: linear-gradient(180deg, #ffffff 0%, #f1f3f7 100%);
+  }
+  .thumb .map-icon{
+    max-width:72%; max-height:72%;
+    display:block;
+    filter: drop-shadow(0 1px 1px rgba(0,0,0,.10));
+  }
+
+  /* barra meta con bandiera + testo */
+  .meta{
+    width:100%; padding:10px 12px;
+    border-top:1px solid rgba(0,0,0,.06);
+    display:flex; align-items:center; justify-content:center; gap:8px;
+    background:#fff;
+  }
+  .flag{
+    width:22px; height:15px; border-radius:2px;
+    box-shadow:0 0 2px rgba(0,0,0,.25);
+    flex:0 0 auto;
+  }
+  .label{
+    font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+    max-width: calc(var(--size) - 60px);
+  }
+
+  /* Accenti colore per singolo paese (tinta leggera nel gradiente) */
+  .trip.namibia .thumb{ background: linear-gradient(180deg, #ffffff 0%, #eaf2ff 100%); }
+  .trip.uganda  .thumb{ background: linear-gradient(180deg, #ffffff 0%, #eaf9f0 100%); }
+</style>
 </head>
 <body>
-  <div class="container">
+  <div class="wrap">
     <h1>I miei viaggi</h1>
 
-    <a href="2025.07-Namibia.html" class="btn">
-      <img src="media/icons/namibia.svg" alt="Mappa Namibia" class="map-icon">
-      <img src="https://flagcdn.com/w20/na.png" alt="Namibia" class="flag">
-      Namibia 2025
-    </a>
+    <div class="grid">
 
-    <a href="2024.10-UgandaScimpanzè.html" class="btn">
-      <img src="media/icons/uganda.svg" alt="Mappa Uganda" class="map-icon">
-      <img src="https://flagcdn.com/w20/ug.png" alt="Uganda" class="flag">
-      Uganda 2024
-    </a>
+      <!-- Namibia -->
+      <a class="trip namibia" href="2025.07-Namibia.html" aria-label="Apri Namibia 2025">
+        <div class="thumb">
+          <!-- metti il tuo SVG/PNG locale -->
+          <img class="map-icon" src="media/icons/namibia.svg" alt="">
+        </div>
+        <div class="meta">
+          <img class="flag" src="https://flagcdn.com/w20/na.png" alt="Namibia">
+          <span class="label">Namibia 2025</span>
+        </div>
+      </a>
+
+      <!-- Uganda -->
+      <a class="trip uganda" href="2024.10-Uganda.html" aria-label="Apri Uganda 2024">
+        <div class="thumb">
+          <img class="map-icon" src="media/icons/uganda.svg" alt="">
+        </div>
+        <div class="meta">
+          <img class="flag" src="https://flagcdn.com/w20/ug.png" alt="Uganda">
+          <span class="label">Uganda 2024</span>
+        </div>
+      </a>
+
+      <!-- Duplica per altri viaggi
+      <a class="trip italia" href="YYYY.MM-Italia.html" aria-label="Apri Italia YYYY">
+        <div class="thumb">
+          <img class="map-icon" src="media/icons/italy.svg" alt="">
+        </div>
+        <div class="meta">
+          <img class="flag" src="https://flagcdn.com/w20/it.png" alt="Italia">
+          <span class="label">Italia YYYY</span>
+        </div>
+      </a>
+      -->
+
+    </div>
   </div>
 </body>
 </html>
