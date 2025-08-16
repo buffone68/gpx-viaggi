@@ -2,7 +2,7 @@
 <html lang="it">
 <head>
   <meta charset="utf-8" />
-  <title>Namibia 2025 – GPX</title>
+  <title>Uganda 2024 – GPX</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <!-- Leaflet + Leaflet-GPX -->
@@ -60,7 +60,7 @@
 
   <!-- Legenda -->
   <div class="legend" id="legend">
-    <span class="title">Namibia 2025 – Giorni</span>
+    <span class="title">Uganda 2024 – Giorni</span>
   </div>
 
 <script>
@@ -108,9 +108,13 @@ const endIconUrl = 'data:image/svg+xml;utf8,' + encodeURIComponent(
    MAPPA + BASE LAYERS
    ======================= */
 
+// 1) CREA LA MAPPA
+const map = L.map('map', { zoomControl: true });
+
+// 2) CENTRA (Uganda, visto che i file sono Uganda)
 map.fitBounds([
-  [-1.5, 29.5],   // sud-ovest
-  [4.3, 35.0]     // nord-est
+  [-1.5, 29.5],  // sud-ovest
+  [ 4.3, 35.0]   // nord-est
 ]);
 
 // OSM
