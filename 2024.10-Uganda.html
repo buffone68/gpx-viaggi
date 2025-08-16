@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="utf-8" />
+  <title>Namibia 2025 – GPX</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- Leaflet + Leaflet-GPX -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.css"/>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet-gpx/1.7.0/gpx.min.js"></script>
+
+  <style>
+    html, body { height:100%; margin:0; }
+    #map { height:100vh; position:relative; z-index:1; }
+
+    /* Bottone legenda */
+    .legend-toggle{
+      position:absolute; top:14px; left:10px; z-index:10000;
+      padding:6px 10px; border-radius:8px; border:1px solid #ccc;
+      background:#fff; cursor:pointer;
+      font:13px system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;
+      box-shadow:0 2px 7px rgba(0,0,0,.2);
+    }
+
+    /* Box legenda */
+    .legend{
+      position:absolute; top:60px; left:10px; background:#fff; padding:10px 12px;
+      border-radius:8px; box-shadow:0 2px 7px rgba(0,0,0,.25);
+      max-height:55%; overflow:auto;
+      font:13px/1.35 system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;
+      z-index:9999
+    }
+    .legend .title{ font-weight:700; display:block; margin-bottom:8px }
+    .legend div{ margin:6px 0 }
+    .legend input[type="checkbox"]{ transform: translateY(1px); margin-right:6px; }
+
+    /* chip colore */
+    .swatch{
+      display:inline-block; width:12px; height:12px; margin-right:8px;
+      border-radius:3px; vertical-align:middle
+    }
+
+    /* collassa legenda */
+    .legend.collapsed{ max-height:40px; overflow:hidden; }
+
+    /* mobile: legenda più stretta e chiusa di default */
+    @media (max-width: 768px){
+      .legend{ max-width: 78vw }
+      .legend.collapsed{ max-height: 40px }
+    }
+  </style>
+</head>
+<body>
+
+  <div id="map"></div>
+
+  <!-- Bottone per comprimere/espandere la legenda -->
+  <button id="lgToggle" class="legend-toggle" aria-expanded="true">Legenda</button>
+
+  <!-- Legenda -->
+  <div class="legend" id="legend">
+    <span class="title">Namibia 2025 – Giorni</span>
+  </div>
+
+<script>
+/* =======================
+   CONFIG
+   ======================= */
+
+// (Opzionale) se vuoi Mapbox al posto di OSM/Carto/Esri, metti qui il token
+const MB_TOKEN = ''; // es: 'pk.eyJ1Ijoi…'  — se vuoto usa solo OSM/Carto/Esri
+
+// Link dei GPX (in ordine cronologico)
+const files = [
+  'https://raw.githubusercontent.com/buffone68/gpx-viaggi/refs/heads/main/2025.07-Namibia/2025-07-28-Giorno-01-Namibia.GPX',
+  'https://raw.githubusercontent.com/buffone68/gpx-viaggi/refs/heads/main/2025.07-Namibia/2025-07-29-Giorno-02-Namibia.GPX',
+  'https://raw.githubusercontent.com/buffone68/gpx-viaggi/refs/heads/main/2025.07-Namibia/2025-07-30-Giorno-03-Namibia.GPX',
+  'https://raw.githubusercontent.com/buffone68/gpx-viaggi/refs/heads/main/2025.07-Namibia/2025-07-31-Giorno-04-Namibia.GPX',
+  'https://raw.githubusercontent.com/buffone68/gpx-viaggi/refs/heads/main/2025.07-Namibia/2025-08-01-Giorno-05-Namibia.GPX',
+  'https://raw.githubusercontent.com/buffone68/gpx-viaggi/refs/heads/main/2025.07-Namibia/2025-08-02-Giorno-06-Namibia.GPX',
+  'https://raw.githubusercontent.com/buffone68/gpx-viaggi/refs/heads/main/2025.07-Namibia/2025-08-03-Giorno-07-Namibia.GPX',
+  'https://raw.githubusercontent.com/buffone68/gpx-viaggi/refs/heads/main/2025.07-Namibia/2025-08-04-Giorno-08-Namibia.GPX',
+  'https://raw.githubusercontent.com/buffone68/gpx-viaggi/refs/heads/main/2025.07-Namibia/2025-08-05-Giorno-09-Namibia.GPX',
+  'https://raw.githubusercontent.com/buffone68/gpx-viaggi/refs/heads/main/2025.07-Namibia/2025-08-06-Giorno-10-Namibia.GPX',
+  'https://raw.githubusercontent.com/buffone68/gpx-viaggi/refs/heads/main/2025.07-Namibia/2025-08-07-Giorno-11-Namibia.GPX',
+  'https://raw.githubusercontent.com/buffone68/gpx-viaggi/refs/heads/main/2025.07-Namibia/2025-08-08-Giorno-12-Namibia.GPX',
+  'https://raw.githubusercontent.com/buffone68/gpx-viaggi/refs/heads/main/2025.07-Namibia/2025-08-09-Giorno-13-Namibia.GPX',
+  'https://raw.githubusercontent.com/buffone68/gpx-viaggi/refs/heads/main/2025.07-Namibia/2025-08-10-Giorno-14-Namibia.GPX'
+];
+
+// Tavolozza (14 colori)
+const colors = ['#e41a1c','#377eb8','#4daf4a','#984ea3',
+                '#ff7f00','#a65628','#f781bf','#999999',
+                '#1b9e77','#d95f02','#7570b3','#e7298a',
+                '#66a61e','#e6ab02'];
+
+// Icone start/end come SVG inline
+const startIconUrl = 'data:image/svg+xml;utf8,' + encodeURIComponent(
+  `<svg xmlns="http://www.w3.org/2000/svg" width="26" height="41" viewBox="0 0 26 41">
+     <path d="M13 0C6 0 0 6 0 13c0 11 13 28 13 28s13-17 13-28C26 6 20 0 13 0z" fill="#2ECC71"/>
+     <circle cx="13" cy="13" r="6" fill="#fff"/>
+   </svg>`
+);
+const endIconUrl = 'data:image/svg+xml;utf8,' + encodeURIComponent(
+  `<svg xmlns="http://www.w3.org/2000/svg" width="26" height="41" viewBox="0 0 26 41">
+     <path d="M13 0C6 0 0 6 0 13c0 11 13 28 13 28s13-17 13-28C26 6 20 0 13 0z" fill="#E74C3C"/>
+     <circle cx="13" cy="13" r="6" fill="#fff"/>
+   </svg>`
+);
+
+/* =======================
+   MAPPA + BASE LAYERS
+   ======================= */
+
+const map = L.map('map', { zoomControl: true }).setView([-22.56, 17.08], 5);
+
+// OSM
+const baseOSM = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+  { attribution: '© OpenStreetMap contributors' }).addTo(map);
+
+// Carto
+const baseLight = L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',
+  { attribution: '© OpenStreetMap, © CARTO' });
+const baseDark = L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',
+  { attribution: '© OpenStreetMap, © CARTO' });
+
+// Esri Satellite
+const baseEsriImagery = L.tileLayer(
+  'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
+  { attribution: 'Tiles © Esri' }
+);
+
+// (Opzionale) Mapbox
+let baseMbStreets, baseMbSatStreets;
+if (MB_TOKEN) {
+  baseMbStreets = L.tileLayer(
+    'https://api.mapbox.com/styles/v1/mapbox/streets-v12/tiles/{z}/{x}/{y}?access_token=' + MB_TOKEN,
+    { tileSize:512, zoomOffset:-1, attribution:'© Mapbox © OpenStreetMap' }
+  );
+  baseMbSatStreets = L.tileLayer(
+    'https://api.mapbox.com/styles/v1/mapbox/satellite-streets-v12/tiles/{z}/{x}/{y}?access_token=' + MB_TOKEN,
+    { tileSize:512, zoomOffset:-1, attribution:'© Mapbox © OpenStreetMap' }
+  );
+}
+
+const baseLayers = {
+  'OSM': baseOSM,
+  'Carto Light': baseLight,
+  'Carto Dark': baseDark,
+  'Esri Satellite': baseEsriImagery
+};
+if (MB_TOKEN) {
+  baseLayers['Mapbox Streets'] = baseMbStreets;
+  baseLayers['Mapbox Satellite + Strade'] = baseMbSatStreets;
+}
+L.control.layers(baseLayers, {}, { collapsed:true }).addTo(map);
+
+/* =======================
+   LEGENDA
+   ======================= */
+
+const legend = document.getElementById('legend');
+const lgBtn  = document.getElementById('lgToggle');
+
+// Su mobile parti chiusa
+if (window.matchMedia('(max-width: 768px)').matches) {
+  legend.classList.add('collapsed');
+  lgBtn.setAttribute('aria-expanded','false');
+}
+lgBtn.addEventListener('click', () => {
+  legend.classList.toggle('collapsed');
+  const expanded = !legend.classList.contains('collapsed');
+  lgBtn.setAttribute('aria-expanded', String(expanded));
+});
+
+/* =======================
+   CARICAMENTO GPX (solo km)
+   ======================= */
+
+const overall = L.latLngBounds([]);
+let remaining = files.length;
+let totalKm = 0;  // solo chilometri
+
+files.forEach((url, i) => {
+  const color = colors[i % colors.length];
+  const name  = url.split('/').pop().replace('.GPX','');
+
+  // Riga legenda
+  const row  = document.createElement('div');
+  const cb   = document.createElement('input');
+  cb.type = 'checkbox'; cb.checked = true;
+
+  const sw   = document.createElement('span'); sw.className='swatch'; sw.style.background=color;
+  const label= document.createElement('span'); label.textContent = name;
+
+  row.appendChild(cb); row.appendChild(sw); row.appendChild(label);
+  legend.appendChild(row);
+
+  const gpx = new L.GPX(url, {
+    async: true,
+    polyline_options: { color, weight: 4, opacity: 0.95 },
+    marker_options: {
+      startIconUrl: startIconUrl,
+      endIconUrl:   endIconUrl,
+      shadowUrl: null,
+      wptIconUrls: {}
+    }
+  })
+  .on('loaded', e => {
+    // estendi bbox complessivo
+    overall.extend(e.target.getBounds());
+
+    // distanza in km (se disponibile)
+    const distKm = e.target.get_distance ? (e.target.get_distance()/1000) : 0;
+    if (distKm) {
+      totalKm += distKm;
+      label.textContent = `${name} (${distKm.toFixed(1)} km)`;
+    }
+
+    if (--remaining === 0) {
+      // Totali
+      const stats = document.createElement('div');
+      stats.style.cssText = 'margin-top:8px;border-top:1px solid #eee;padding-top:8px;';
+      stats.innerHTML = `<b>Totale</b>: ${totalKm.toFixed(1)} km`;
+      legend.appendChild(stats);
+
+      // centra su tutte le tracce
+      if (overall.isValid()) map.fitBounds(overall, {padding:[20,20]});
+    }
+  })
+  .on('mouseover', e => { try { e.target.setStyle({weight:6}); e.target.bringToFront(); } catch(_){} })
+  .on('mouseout',  e => { try { e.target.setStyle({weight:4}); } catch(_){} });
+
+  gpx.addTo(map);
+
+  // Toggle visibilità
+  cb.addEventListener('change', () => {
+    if (cb.checked) { gpx.addTo(map); } else { map.removeLayer(gpx); }
+  });
+
+  // Interazione legenda: hover evidenzia, click zooma
+  row.addEventListener('mouseenter', () => { try { gpx.setStyle({weight:6}); gpx.bringToFront(); } catch(_){} });
+  row.addEventListener('mouseleave', () => { try { gpx.setStyle({weight:4}); } catch(_){} });
+  row.addEventListener('click', () => {
+    if (legend.classList.contains('collapsed')) {
+      legend.classList.remove('collapsed'); lgBtn.setAttribute('aria-expanded','true');
+    } else {
+      const b = gpx.getBounds ? gpx.getBounds() : null;
+      if (b && b.isValid && b.isValid()) map.fitBounds(b, {padding:[20,20]});
+    }
+  });
+});
+</script>
+</body>
+</html>
