@@ -6,46 +6,87 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <style>
+    :root{
+      --btn-bg:#007bff;
+      --btn-bg-hover:#0056b3;
+      --flag-w:22px;   /* default (tablet/desktop) */
+      --flag-h:15px;
+    }
+
+    @media (max-width: 480px){
+      :root{
+        --flag-w:18px; /* mobile piccolo */
+        --flag-h:12px;
+      }
+    }
+    @media (min-width: 900px){
+      :root{
+        --flag-w:24px; /* desktop largo */
+        --flag-h:16px;
+      }
+    }
+
     body {
       margin: 0;
       font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
       display: flex;
       justify-content: center;
       align-items: center;
-      height: 100vh;
+      min-height: 100vh;
       background: #f9f9f9;
     }
-    .container {
-      text-align: center;
-    }
-    h1 {
-      margin-bottom: 30px;
-      color: #333;
-    }
+    .container { text-align: center; padding: 24px; }
+    h1 { margin-bottom: 30px; color: #333; }
+
     .btn {
-      display: inline-block;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
       padding: 12px 24px;
       margin: 10px;
       font-size: 16px;
       font-weight: 600;
       color: #fff;
-      background-color: #007bff;
+      background-color: var(--btn-bg);
       border: none;
-      border-radius: 6px;
+      border-radius: 8px;
       cursor: pointer;
       text-decoration: none;
-      transition: background-color 0.3s ease;
+      transition: background-color .2s ease, transform .05s ease;
+      box-shadow: 0 2px 6px rgba(0,0,0,.15);
     }
-    .btn:hover {
-      background-color: #0056b3;
+    .btn:hover   { background-color: var(--btn-bg-hover); }
+    .btn:active  { transform: translateY(1px); }
+    .btn img.flag{
+      width: var(--flag-w);
+      height: var(--flag-h);
+      border-radius: 2px;
+      box-shadow: 0 0 2px rgba(0,0,0,.25);
+      flex: 0 0 auto;
     }
   </style>
 </head>
 <body>
   <div class="container">
     <h1>I miei viaggi</h1>
-    <a href="2025.07-Namibia.html" class="btn">2025 - Namibia</a>
-    <a href="2024.10-Uganda-Scimpanzè.html" class="btn">2024 - Uganda Scimpanzè</a>
+
+    <a href="2025.07-Namibia.html" class="btn">
+      <img src="https://flagcdn.com/w20/na.png" alt="Namibia" class="flag">
+      Namibia 2025
+    </a>
+
+    <a href="2024.10-Uganda.html" class="btn">
+      <img src="https://flagcdn.com/w20/ug.png" alt="Uganda" class="flag">
+      Uganda 2024
+    </a>
+
+    <!-- Aggiungi qui altri viaggi copiando un <a> e cambiando link + bandiera -->
+    <!-- Esempio Italia:
+    <a href="2023.05-Italia.html" class="btn">
+      <img src="https://flagcdn.com/w20/it.png" alt="Italia" class="flag">
+      Italia 2023
+    </a>
+    -->
   </div>
 </body>
 </html>
