@@ -14,7 +14,7 @@
     html, body { height:100%; margin:0; }
     #map { height:100vh; position:relative; z-index:1; }
 
-    /* Bottone toggle legenda */
+    /* Bottone legenda */
     .legend-toggle{
       position:absolute; top:14px; left:10px; z-index:10000;
       padding:6px 10px; border-radius:8px; border:1px solid #ccc;
@@ -23,7 +23,7 @@
       box-shadow:0 2px 7px rgba(0,0,0,.2);
     }
 
-    /* Legenda */
+    /* Box legenda */
     .legend{
       position:absolute; top:60px; left:10px; background:#fff; padding:10px 12px;
       border-radius:8px; box-shadow:0 2px 7px rgba(0,0,0,.25);
@@ -31,13 +31,20 @@
       font:13px/1.35 system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;
       z-index:9999
     }
-    .legend.collapsed{ max-height:40px; overflow:hidden; }
-    .legend .title{ font-weight:700; display:block; margin-bottom:6px }
-    .legend div{ margin:3px 0 }
-    .swatch{ display:inline-block; width:12px; height:12px; margin-right:8px; border-radius:3px; vertical-align:middle }
+    .legend .title{ font-weight:700; display:block; margin-bottom:8px }
+    .legend div{ margin:6px 0 }
     .legend input[type="checkbox"]{ transform: translateY(1px); margin-right:6px; }
 
-    /* Mobile: legenda parte collassata e un po' più stretta */
+    /* chip colore */
+    .swatch{
+      display:inline-block; width:12px; height:12px; margin-right:8px;
+      border-radius:3px; vertical-align:middle
+    }
+
+    /* collassa legenda */
+    .legend.collapsed{ max-height:40px; overflow:hidden; }
+
+    /* mobile: legenda più stretta e chiusa di default */
     @media (max-width: 768px){
       .legend{ max-width: 78vw }
       .legend.collapsed{ max-height: 40px }
@@ -61,8 +68,8 @@
    CONFIG
    ======================= */
 
-// (Opzionale) se vuoi anche gli stili Mapbox con etichette migliori, metti qui il token
-const MB_TOKEN = ''; // es.: 'pk.eyJ1Ijoi…'  — se resti vuoto usi solo OSM/Carto/Esri
+// (Opzionale) se vuoi Mapbox al posto di OSM/Carto/Esri, metti qui il token
+const MB_TOKEN = ''; // es: 'pk.eyJ1Ijoi…'  — se vuoto usa solo OSM/Carto/Esri
 
 // Link dei GPX (in ordine cronologico)
 const files = [
@@ -124,7 +131,7 @@ const baseEsriImagery = L.tileLayer(
   { attribution: 'Tiles © Esri' }
 );
 
-// (Opzionali) Mapbox
+// (Opzionale) Mapbox
 let baseMbStreets, baseMbSatStreets;
 if (MB_TOKEN) {
   baseMbStreets = L.tileLayer(
@@ -150,12 +157,13 @@ if (MB_TOKEN) {
 L.control.layers(baseLayers, {}, { collapsed:true }).addTo(map);
 
 /* =======================
-   LEGENDA (toggle)
+   LEGENDA
    ======================= */
+
 const legend = document.getElementById('legend');
 const lgBtn  = document.getElementById('lgToggle');
 
-// su mobile parti chiusa
+// Su mobile parti chiusa
 if (window.matchMedia('(max-width: 768px)').matches) {
   legend.classList.add('collapsed');
   lgBtn.setAttribute('aria-expanded','false');
@@ -167,15 +175,12 @@ lgBtn.addEventListener('click', () => {
 });
 
 /* =======================
-   CARICAMENTO GPX + STATISTICHE
+   CARICAMENTO GPX (solo km)
    ======================= */
 
 const overall = L.latLngBounds([]);
 let remaining = files.length;
-
-let totalKm = 0;      // sempre
-let totalUp = 0;      // se disponibili
-let totalDown = 0;
+let totalKm = 0;  // solo chilometri
 
 files.forEach((url, i) => {
   const color = colors[i % colors.length];
@@ -185,8 +190,10 @@ files.forEach((url, i) => {
   const row  = document.createElement('div');
   const cb   = document.createElement('input');
   cb.type = 'checkbox'; cb.checked = true;
+
   const sw   = document.createElement('span'); sw.className='swatch'; sw.style.background=color;
   const label= document.createElement('span'); label.textContent = name;
+
   row.appendChild(cb); row.appendChild(sw); row.appendChild(label);
   legend.appendChild(row);
 
@@ -201,34 +208,24 @@ files.forEach((url, i) => {
     }
   })
   .on('loaded', e => {
+    // estendi bbox complessivo
     overall.extend(e.target.getBounds());
 
-    // distanza in km
+    // distanza in km (se disponibile)
     const distKm = e.target.get_distance ? (e.target.get_distance()/1000) : 0;
     if (distKm) {
       totalKm += distKm;
       label.textContent = `${name} (${distKm.toFixed(1)} km)`;
     }
 
-    // dislivelli (se la libreria li calcola)
-    const up   = e.target.get_elevation_gain ? e.target.get_elevation_gain() : 0;
-    const down = e.target.get_elevation_loss ? e.target.get_elevation_loss() : 0;
-    totalUp   += up;
-    totalDown += down;
-
     if (--remaining === 0) {
       // Totali
       const stats = document.createElement('div');
       stats.style.cssText = 'margin-top:8px;border-top:1px solid #eee;padding-top:8px;';
-      let html = `<b>Totale</b>: ${totalKm.toFixed(1)} km`;
-      // mostra ↑/↓ solo se non sono tutti zero
-      if (totalUp > 0 || totalDown > 0) {
-        html += `<br>↑ ${Math.round(totalUp)} m, ↓ ${Math.round(totalDown)} m`;
-      }
-      stats.innerHTML = html;
+      stats.innerHTML = `<b>Totale</b>: ${totalKm.toFixed(1)} km`;
       legend.appendChild(stats);
 
-      // centra la mappa su tutte le tracce
+      // centra su tutte le tracce
       if (overall.isValid()) map.fitBounds(overall, {padding:[20,20]});
     }
   })
@@ -237,12 +234,12 @@ files.forEach((url, i) => {
 
   gpx.addTo(map);
 
-  // Toggle visibilità dal checkbox
+  // Toggle visibilità
   cb.addEventListener('change', () => {
     if (cb.checked) { gpx.addTo(map); } else { map.removeLayer(gpx); }
   });
 
-  // Interazione dalla legenda: hover evidenzia, click zooma
+  // Interazione legenda: hover evidenzia, click zooma
   row.addEventListener('mouseenter', () => { try { gpx.setStyle({weight:6}); gpx.bringToFront(); } catch(_){} });
   row.addEventListener('mouseleave', () => { try { gpx.setStyle({weight:4}); } catch(_){} });
   row.addEventListener('click', () => {
