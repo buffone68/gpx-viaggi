@@ -38,8 +38,9 @@
 </head>
 <body>
 <div id="map"></div>
-<div class="legend" id="legend"><b>Namibia 2025 – Giorni</b></div>
-
+<button id="lgToggle" class="legend-toggle" aria-expanded="true">Legenda</button>
+<div class="legend" id="legend"><span class="title">Namibia 2025 – Giorni</span></div>
+  
 <script>
   // Ordine fisso 01 -> 14
   const files = [
@@ -144,64 +145,107 @@ L.control.layers({
 
   const overall = L.latLngBounds([]);
   const legend  = document.getElementById('legend');
+  const lgBtn = document.getElementById('lgToggle');
+
+// Collassa di default su mobile
+if (window.matchMedia('(max-width: 768px)').matches) {
+  legend.classList.add('collapsed');
+  lgBtn.setAttribute('aria-expanded','false');
+}
+
+lgBtn.addEventListener('click', () => {
+  legend.classList.toggle('collapsed');
+  const expanded = !legend.classList.contains('collapsed');
+  lgBtn.setAttribute('aria-expanded', String(expanded));
+});
+
+// Statistiche
+let totalKm = 0, totalMoveSec = 0;
+const layerRefs = []; // {layer, row, color, name}
   const layers  = [];
   let remaining = files.length, totalKm = 0;
 
   // Legenda fissa con checkbox
   files.forEach((url, i) => {
-    const color = colors[i % colors.length];
-    const name  = url.split('/').pop().replace('.GPX','');
+  const color = colors[i % colors.length];
+  const name  = url.split('/').pop().replace('.GPX','');
 
-    const row   = document.createElement('div');
-    const cb    = document.createElement('input');
-    cb.type = 'checkbox'; cb.checked = true; cb.style.marginRight = '6px';
-    const sw    = document.createElement('span');
-    sw.className = 'swatch'; sw.style.background = color;
-    const label = document.createElement('span'); label.textContent = name;
+  // Riga legenda (checkbox + swatch + label)
+  const row = document.createElement('div');
+  const cb  = document.createElement('input');
+  cb.type = 'checkbox'; cb.checked = true; cb.style.marginRight = '6px';
 
-    row.appendChild(cb); row.appendChild(sw); row.appendChild(label);
-    legend.appendChild(row);
+  const sw  = document.createElement('span');
+  sw.className = 'swatch'; sw.style.background = color;
 
-    const gpx = new L.GPX(url, {
-      async: true,
-      polyline_options: { color, weight: 4, opacity: 0.95 },
-      marker_options: {
-        startIconUrl: startIconUrl,
-        endIconUrl:   endIconUrl,
-        shadowUrl: null,
-        wptIconUrls: {} // niente waypoint
-      }
-    })
-    .on('loaded', e => {
-      overall.extend(e.target.getBounds());
+  const label = document.createElement('span'); label.textContent = name;
 
-      // distanza (km) se disponibile
-      const km = (e.target.get_distance ? e.target.get_distance()/1000 : 0);
-      if (km) {
-        totalKm += km;
-        label.textContent = `${name} (${km.toFixed(1)} km)`;
-      }
+  row.appendChild(cb); row.appendChild(sw); row.appendChild(label);
+  legend.appendChild(row);
 
-      if (--remaining === 0) {
-        const tot = document.createElement('div');
-        tot.style.marginTop = '8px';
-        tot.innerHTML = `<b>Totale</b>: ${totalKm.toFixed(1)} km`;
-        legend.appendChild(tot);
-        map.fitBounds(overall,{padding:[20,20]});
-      }
-    })
-    .on('mouseover', e => { e.target.setStyle({weight:6}); e.target.bringToFront(); })
-    .on('mouseout',  e => { e.target.setStyle({weight:4}); });
+  // GPX layer
+  const gpx = new L.GPX(url, {
+    async: true,
+    polyline_options: { color, weight: 4, opacity: 0.95 },
+    marker_options: {
+      startIconUrl: startIconUrl,
+      endIconUrl:   endIconUrl,
+      shadowUrl: null,
+      wptIconUrls: {}
+    }
+  })
+  .on('loaded', e => {
+    overall.extend(e.target.getBounds());
 
-    gpx.addTo(map);
+    // Statistiche per giorno
+    const distKm = (e.target.get_distance ? e.target.get_distance()/1000 : 0);
+    const moveSec = (e.target.get_moving_time ? e.target.get_moving_time() : 0);
+    if (distKm) totalKm += distKm;
+    if (moveSec) totalMoveSec += moveSec;
 
-    cb.addEventListener('change', () => {
-      if (cb.checked) { gpx.addTo(map); } else { map.removeLayer(gpx); }
-    });
+    // Appendi km al label (formattato)
+    if (distKm) label.textContent = `${name} (${distKm.toFixed(1)} km)`;
 
-    layers.push({layer:gpx, name, color, checkbox:cb});
+    if (--remaining === 0) {
+      // Totali a fine caricamento
+      const stats = document.createElement('div');
+      stats.style.cssText = 'margin-top:8px;border-top:1px solid #eee;padding-top:8px;';
+      const h = Math.floor(totalMoveSec/3600);
+      const m = Math.round((totalMoveSec%3600)/60);
+      const timeTxt = totalMoveSec ? `, tempo mov.: ${h}h ${String(m).padStart(2,'0')}m` : '';
+      stats.innerHTML = `<b>Totale</b>: ${totalKm.toFixed(1)} km${timeTxt}`;
+      legend.appendChild(stats);
+
+      map.fitBounds(overall,{padding:[20,20]});
+    }
+  })
+  .on('mouseover', e => { e.target.setStyle({weight:6}); e.target.bringToFront(); })
+  .on('mouseout',  e => { e.target.setStyle({weight:4}); });
+
+  gpx.addTo(map);
+
+  // Toggle visibilità dalla checkbox
+  cb.addEventListener('change', () => {
+    if (cb.checked) { gpx.addTo(map); } else { map.removeLayer(gpx); }
   });
 
+  // Interazione dalla legenda:
+  // - hover riga = evidenzia traccia
+  // - click/tap riga = zoom su quel giorno
+  row.addEventListener('mouseenter', () => { try { gpx.setStyle({weight:6}); gpx.bringToFront(); } catch(_){} });
+  row.addEventListener('mouseleave', () => { try { gpx.setStyle({weight:4}); } catch(_){} });
+  row.addEventListener('click', () => {
+    // se è collassata, apri; altrimenti zooma
+    if (legend.classList.contains('collapsed')) {
+      legend.classList.remove('collapsed'); lgBtn.setAttribute('aria-expanded','true');
+    } else {
+      const b = gpx.getBounds ? gpx.getBounds() : null;
+      if (b && b.isValid && b.isValid()) map.fitBounds(b, {padding:[20,20]});
+    }
+  });
+
+  layerRefs.push({ layer: gpx, row, color, name, checkbox: cb });
+});
   // Zoom + Fit All
   L.control.zoom({ position:'topleft' }).addTo(map);
   const FitAll = L.Control.extend({
