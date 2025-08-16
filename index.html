@@ -19,6 +19,21 @@
     .legend b{display:block;margin-bottom:8px}
     .legend div{margin:3px 0}
     .swatch{display:inline-block;width:12px;height:12px;margin-right:8px;border-radius:3px;vertical-align:middle}
+    /* toggle legenda */
+.legend-toggle{
+  position:absolute; top:14px; left:10px; z-index:10000;
+  padding:6px 10px; border-radius:8px; border:1px solid #ccc;
+  background:#fff; cursor:pointer; font:13px system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;
+  box-shadow:0 2px 7px rgba(0,0,0,.2);
+}
+.legend.collapsed{ max-height:40px; overflow:hidden; }
+.legend .title{ font-weight:700; display:block; margin-bottom:6px }
+
+/* su schermi piccoli parti già collassato */
+@media (max-width: 768px){
+  .legend{ max-width: 78vw }
+  .legend.collapsed{ max-height: 40px }
+}
   </style>
 </head>
 <body>
