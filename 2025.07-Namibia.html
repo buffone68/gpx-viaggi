@@ -24,15 +24,25 @@
     }
 
     /* ============== Bottone HOME (torna a index) ============== */
-    .home-btn{
-      position:absolute; top:14px; right:10px; z-index:10000;
-      padding:6px 10px; border-radius:8px; border:1px solid #ccc;
-      background:#fff; color:#333; text-decoration:none;
-      font:13px system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;
-      box-shadow:0 2px 7px rgba(0,0,0,.2);
-      cursor:pointer;
-    }
-    .home-btn:hover{ background:#f0f0f0; }
+    <style>
+  /* Bottone "Menu" */
+  .menu-button {
+    position: absolute;
+    bottom: 14px;   /* invece di top */
+    right: 10px;    /* invece di left */
+    z-index: 10000;
+    padding: 6px 12px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    background: #fff;
+    cursor: pointer;
+    font: 14px system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;
+    box-shadow: 0 2px 7px rgba(0,0,0,.2);
+  }
+  .menu-button:hover {
+    background:#f8f8f8;
+  }
+</style>
     /* =========================================================== */
 
     /* Box legenda */
@@ -70,8 +80,8 @@
   <!-- Bottone per comprimere/espandere la legenda -->
   <button id="lgToggle" class="legend-toggle" aria-expanded="true">Legenda</button>
 
-  <!-- Bottone Home/Menu che riporta alla pagina principale -->
-  <a href="index.html" class="home-btn" aria-label="Torna al menu">🏠 Menu</a>
+  <!-- Bottone per tornare al menu principale -->
+<a href="index.html" class="menu-button">🏠 Menu</a>
 
   <!-- Legenda -->
   <div class="legend" id="legend">
