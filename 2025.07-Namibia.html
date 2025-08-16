@@ -14,6 +14,20 @@
     html, body { height:100%; margin:0; }
     #map { height:100vh; position:relative; z-index:1; }
 
+    <!-- Bottone Home -->
+<a href="index.html" class="home-btn">🏠 Menu</a>
+
+.home-btn{
+  position:absolute; top:14px; right:10px; z-index:10000;
+  padding:6px 10px; border-radius:8px; border:1px solid #ccc;
+  background:#fff; cursor:pointer;
+  font:13px system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;
+  box-shadow:0 2px 7px rgba(0,0,0,.2);
+  text-decoration:none; color:#000;
+}
+.home-btn:hover{
+  background:#f0f0f0;
+}
     /* Bottone legenda */
     .legend-toggle{
       position:absolute; top:14px; left:10px; z-index:10000;
