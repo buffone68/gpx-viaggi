@@ -6,10 +6,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
 <style>
   :root{
-    --btn-bg:#3ca66b;       /* verdolino fisso */
+    --btn-bg:#3ca66b;       /* verdolino */
     --btn-bg-hover:#2f8c57;
     --text:#fff;
-    --flag-w:16px; --flag-h:11px; /* più piccole */
   }
   body{
     margin:0; background:#f6f7f9;
@@ -17,32 +16,37 @@
     display:flex; min-height:100vh;
     align-items:center; justify-content:center;
   }
-  .wrap{ width:min(700px,92vw); padding:16px; text-align:center; }
-  h1{margin:0 0 16px; color:#333; font-size:20px;}
+  .wrap{ max-width:900px; padding:16px; text-align:center; }
+  h1{margin:0 0 20px; color:#333;}
+
   .grid{
-    display:flex; flex-direction:column; gap:8px;
+    display:grid;
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); /* quadratini */
+    gap:14px;
+    justify-items:center;
   }
+
   .trip{
-    display:flex; align-items:center; gap:8px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap:6px;
+    width:120px; height:120px;   /* francobollo */
     background:var(--btn-bg);
     color:var(--text);
     text-decoration:none;
-    padding:6px 10px;          /* molto più basso */
-    border-radius:6px;
+    border-radius:10px;
+    padding:10px;
+    box-shadow:0 2px 6px rgba(0,0,0,.2);
+    font-size:13px;
     font-weight:600;
-    font-size:13px;            /* testo più piccolo */
-    box-shadow:0 1px 3px rgba(0,0,0,.15);
     transition:background .2s ease, transform .05s ease;
   }
-  .trip:hover{ background:var(--btn-bg-hover); transform:translateY(-1px); }
-  .trip:active{ transform:translateY(0); }
-
-  .map-icon{
-    width:22px; height:auto;   /* ridotto */
-    flex:0 0 auto;
-  }
-  .flag{ width:var(--flag-w); height:var(--flag-h); border-radius:2px; }
-  .label{ flex:1; text-align:left; }
+  .trip:hover{ background:var(--btn-bg-hover); transform:translateY(-2px);}
+  .trip:active{ transform:translateY(0);}
+  .map-icon{ width:40px; height:auto; }
+  .flag{ width:22px; height:15px; border-radius:2px; }
 </style>
 </head>
 <body>
@@ -53,13 +57,13 @@
       <a class="trip" href="2025.07-Namibia.html">
         <img class="map-icon" src="media/icons/namibia.svg" alt="">
         <img class="flag" src="https://flagcdn.com/w20/na.png" alt="Namibia">
-        <span class="label">Namibia 2025</span>
+        Namibia 2025
       </a>
 
       <a class="trip" href="2024.10-Uganda-Scimpanzè.html">
         <img class="map-icon" src="media/icons/uganda.svg" alt="">
         <img class="flag" src="https://flagcdn.com/w20/ug.png" alt="Uganda">
-        <span class="label">Uganda 2024</span>
+        Uganda 2024
       </a>
 
     </div>
