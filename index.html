@@ -4,186 +4,193 @@
   <meta charset="utf-8" />
   <title>Namibia 2025 – GPX</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- Leaflet + Leaflet-GPX -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.css"/>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet-gpx/1.7.0/gpx.min.js"></script>
+
   <style>
-    html,body,#map{height:100%;margin:0}
-    #map{position:relative; z-index:1;}
+    html, body { height:100%; margin:0; }
+    #map { height:100vh; position:relative; z-index:1; }
+
+    .legend-toggle{
+      position:absolute; top:14px; left:10px; z-index:10000;
+      padding:6px 10px; border-radius:8px; border:1px solid #ccc;
+      background:#fff; cursor:pointer;
+      font:13px system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;
+      box-shadow:0 2px 7px rgba(0,0,0,.2);
+    }
+
     .legend{
-      position:absolute;top:60px;left:10px;background:#fff;padding:10px 12px;
-      border-radius:8px;box-shadow:0 2px 7px rgba(0,0,0,.25);
-      max-height:55%;overflow:auto;font:13px/1.35 system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;
+      position:absolute; top:60px; left:10px; background:#fff; padding:10px 12px;
+      border-radius:8px; box-shadow:0 2px 7px rgba(0,0,0,.25);
+      max-height:55%; overflow:auto;
+      font:13px/1.35 system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;
       z-index:9999
     }
-    .legend b{display:block;margin-bottom:8px}
-    .legend div{margin:3px 0}
-    .swatch{display:inline-block;width:12px;height:12px;margin-right:8px;border-radius:3px;vertical-align:middle}
-    /* toggle legenda */
-.legend-toggle{
-  position:absolute; top:14px; left:10px; z-index:10000;
-  padding:6px 10px; border-radius:8px; border:1px solid #ccc;
-  background:#fff; cursor:pointer; font:13px system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;
-  box-shadow:0 2px 7px rgba(0,0,0,.2);
-}
-.legend.collapsed{ max-height:40px; overflow:hidden; }
-.legend .title{ font-weight:700; display:block; margin-bottom:6px }
+    .legend.collapsed{ max-height:40px; overflow:hidden; }
+    .legend .title{ font-weight:700; display:block; margin-bottom:6px }
+    .legend div{ margin:3px 0 }
+    .swatch{ display:inline-block; width:12px; height:12px; margin-right:8px; border-radius:3px; vertical-align:middle }
 
-/* su schermi piccoli parti già collassato */
-@media (max-width: 768px){
-  .legend{ max-width: 78vw }
-  .legend.collapsed{ max-height: 40px }
-}
+    @media (max-width: 768px){
+      .legend{ max-width: 78vw }
+      .legend.collapsed{ max-height: 40px }
+    }
+
+    /* pulisci il checkbox per iOS/macOS */
+    .legend input[type="checkbox"]{ transform: translateY(1px); margin-right:6px; }
   </style>
 </head>
 <body>
-<div id="map"></div>
-<button id="lgToggle" class="legend-toggle" aria-expanded="true">Legenda</button>
-<div class="legend" id="legend"><span class="title">Namibia 2025 – Giorni</span></div>
-  
+
+  <div id="map"></div>
+
+  <!-- Bottone per comprimere/espandere la legenda -->
+  <button id="lgToggle" class="legend-toggle" aria-expanded="true">Legenda</button>
+
+  <!-- Legenda -->
+  <div class="legend" id="legend">
+    <span class="title">Namibia 2025 – Giorni</span>
+  </div>
+
 <script>
-  // Ordine fisso 01 -> 14
-  const files = [
-    '2025-07-28-Giorno-01-Namibia.GPX',
-    '2025-07-29-Giorno-02-Namibia.GPX',
-    '2025-07-30-Giorno-03-Namibia.GPX',
-    '2025-07-31-Giorno-04-Namibia.GPX',
-    '2025-08-01-Giorno-05-Namibia.GPX',
-    '2025-08-02-Giorno-06-Namibia.GPX',
-    '2025-08-03-Giorno-07-Namibia.GPX',
-    '2025-08-04-Giorno-08-Namibia.GPX',
-    '2025-08-05-Giorno-09-Namibia.GPX',
-    '2025-08-06-Giorno-10-Namibia.GPX',
-    '2025-08-07-Giorno-11-Namibia.GPX',
-    '2025-08-08-Giorno-12-Namibia.GPX',
-    '2025-08-09-Giorno-13-Namibia.GPX',
-    '2025-08-10-Giorno-14-Namibia.GPX'
-  ].map(f => `https://raw.githubusercontent.com/buffone68/gpx-viaggi/refs/heads/main/2025.07-Namibia/${f}`);
+/* =======================
+   CONFIG
+   ======================= */
 
-  // Colori
-  const colors = ['#e41a1c','#377eb8','#4daf4a','#984ea3','#ff7f00',
-                  '#a65628','#f781bf','#999999','#1b9e77','#d95f02',
-                  '#7570b3','#e7298a','#66a61e','#e6ab02'];
+// Se vuoi gli stili Mapbox (etichette migliori), metti qui il tuo token
+const MB_TOKEN = ''; // es: 'pk.eyJ1Ijoi…'
+// Se lo lasci vuoto userai solo OSM/Carto/Esri (nessun problema).
 
-  // Marker Start/End come data-URI (nessun file esterno)
-  const startIconUrl =
-    'data:image/svg+xml;utf8,' + encodeURIComponent(
-      `<svg xmlns="http://www.w3.org/2000/svg" width="18" height="28" viewBox="0 0 24 36">
-         <path fill="#29a329" d="M12 0C5.4 0 0 5.4 0 12c0 8.3 12 24 12 24s12-15.7 12-24C24 5.4 18.6 0 12 0z"/>
-         <circle cx="12" cy="12" r="4.2" fill="#fff"/>
-       </svg>`
-    );
+// Link dei GPX (in ordine cronologico)
+const files = [
+  'https://raw.githubusercontent.com/buffone68/gpx-viaggi/refs/heads/main/2025.07-Namibia/2025-07-28-Giorno-01-Namibia.GPX',
+  'https://raw.githubusercontent.com/buffone68/gpx-viaggi/refs/heads/main/2025.07-Namibia/2025-07-29-Giorno-02-Namibia.GPX',
+  'https://raw.githubusercontent.com/buffone68/gpx-viaggi/refs/heads/main/2025.07-Namibia/2025-07-30-Giorno-03-Namibia.GPX',
+  'https://raw.githubusercontent.com/buffone68/gpx-viaggi/refs/heads/main/2025.07-Namibia/2025-07-31-Giorno-04-Namibia.GPX',
+  'https://raw.githubusercontent.com/buffone68/gpx-viaggi/refs/heads/main/2025.07-Namibia/2025-08-01-Giorno-05-Namibia.GPX',
+  'https://raw.githubusercontent.com/buffone68/gpx-viaggi/refs/heads/main/2025.07-Namibia/2025-08-02-Giorno-06-Namibia.GPX',
+  'https://raw.githubusercontent.com/buffone68/gpx-viaggi/refs/heads/main/2025.07-Namibia/2025-08-03-Giorno-07-Namibia.GPX',
+  'https://raw.githubusercontent.com/buffone68/gpx-viaggi/refs/heads/main/2025.07-Namibia/2025-08-04-Giorno-08-Namibia.GPX',
+  'https://raw.githubusercontent.com/buffone68/gpx-viaggi/refs/heads/main/2025.07-Namibia/2025-08-05-Giorno-09-Namibia.GPX',
+  'https://raw.githubusercontent.com/buffone68/gpx-viaggi/refs/heads/main/2025.07-Namibia/2025-08-06-Giorno-10-Namibia.GPX',
+  'https://raw.githubusercontent.com/buffone68/gpx-viaggi/refs/heads/main/2025.07-Namibia/2025-08-07-Giorno-11-Namibia.GPX',
+  'https://raw.githubusercontent.com/buffone68/gpx-viaggi/refs/heads/main/2025.07-Namibia/2025-08-08-Giorno-12-Namibia.GPX',
+  'https://raw.githubusercontent.com/buffone68/gpx-viaggi/refs/heads/main/2025.07-Namibia/2025-08-09-Giorno-13-Namibia.GPX',
+  'https://raw.githubusercontent.com/buffone68/gpx-viaggi/refs/heads/main/2025.07-Namibia/2025-08-10-Giorno-14-Namibia.GPX'
+];
 
-  const endIconUrl =
-    'data:image/svg+xml;utf8,' + encodeURIComponent(
-      `<svg xmlns="http://www.w3.org/2000/svg" width="18" height="28" viewBox="0 0 24 36">
-         <path fill="#d7263d" d="M12 0C5.4 0 0 5.4 0 12c0 8.3 12 24 12 24s12-15.7 12-24C24 5.4 18.6 0 12 0z"/>
-         <circle cx="12" cy="12" r="4.2" fill="#fff"/>
-       </svg>`
-    );
+// Tavolozza (14 colori)
+const colors = ['#e41a1c','#377eb8','#4daf4a','#984ea3',
+                '#ff7f00','#a65628','#f781bf','#999999',
+                '#1b9e77','#d95f02','#7570b3','#e7298a',
+                '#66a61e','#e6ab02'];
 
-  // Mappa + basemap
-  const map = L.map('map', { preferCanvas:true }).setView([-22.56, 17.08], 5);
-  // OSM classico
-const baseOSM = L.tileLayer(
-  'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-  { attribution: '© OpenStreetMap contributors' }
-).addTo(map);
+// Icone start/end come SVG inline (niente file esterni)
+const startIconUrl = 'data:image/svg+xml;utf8,' + encodeURIComponent(
+  `<svg xmlns="http://www.w3.org/2000/svg" width="26" height="41" viewBox="0 0 26 41">
+     <path d="M13 0C6 0 0 6 0 13c0 11 13 28 13 28s13-17 13-28C26 6 20 0 13 0z" fill="#2ECC71"/>
+     <circle cx="13" cy="13" r="6" fill="#fff"/>
+   </svg>`
+);
+const endIconUrl = 'data:image/svg+xml;utf8,' + encodeURIComponent(
+  `<svg xmlns="http://www.w3.org/2000/svg" width="26" height="41" viewBox="0 0 26 41">
+     <path d="M13 0C6 0 0 6 0 13c0 11 13 28 13 28s13-17 13-28C26 6 20 0 13 0z" fill="#E74C3C"/>
+     <circle cx="13" cy="13" r="6" fill="#fff"/>
+   </svg>`
+);
+
+/* =======================
+   MAPPA + BASE LAYERS
+   ======================= */
+
+const map = L.map('map', { zoomControl: true }).setView([-22.56, 17.08], 5);
+
+// OSM
+const baseOSM = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+  { attribution: '© OpenStreetMap contributors' }).addTo(map);
 
 // Carto
-const baseLight = L.tileLayer(
-  'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',
-  { attribution: '© OpenStreetMap, © CARTO' }
-);
-const baseDark = L.tileLayer(
-  'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',
-  { attribution: '© OpenStreetMap, © CARTO' }
-);
+const baseLight = L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',
+  { attribution: '© OpenStreetMap, © CARTO' });
+const baseDark = L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',
+  { attribution: '© OpenStreetMap, © CARTO' });
 
-// Mapbox (etichette ricche). Usa il tuo token:
-const MB_TOKEN = 'PK_TUO_TOKEN_MAPBOX_QUI';
-
-const baseMbStreets = L.tileLayer(
-  'https://api.mapbox.com/styles/v1/mapbox/streets-v12/tiles/{z}/{x}/{y}?access_token=' + MB_TOKEN,
-  {
-    tileSize: 512, zoomOffset: -1,
-    attribution: '© Mapbox © OpenStreetMap'
-  }
-);
-
-// Satellite con strade sovrapposte (etichette leggibili)
-const baseMbSatStreets = L.tileLayer(
-  'https://api.mapbox.com/styles/v1/mapbox/satellite-streets-v12/tiles/{z}/{x}/{y}?access_token=' + MB_TOKEN,
-  {
-    tileSize: 512, zoomOffset: -1,
-    attribution: '© Mapbox © OpenStreetMap'
-  }
-);
-
-// Esri satellite “puro”
+// Esri Satellite
 const baseEsriImagery = L.tileLayer(
   'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
   { attribution: 'Tiles © Esri' }
 );
 
-// OpenTopoMap (rilievo/curve di livello)
-const baseOpenTopo = L.tileLayer(
-  'https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png',
-  { attribution: '© OpenStreetMap, SRTM | © OpenTopoMap' }
-);
+// (Opzionali) Mapbox
+let baseMbStreets, baseMbSatStreets;
+if (MB_TOKEN) {
+  baseMbStreets = L.tileLayer(
+    'https://api.mapbox.com/styles/v1/mapbox/streets-v12/tiles/{z}/{x}/{y}?access_token=' + MB_TOKEN,
+    { tileSize:512, zoomOffset:-1, attribution:'© Mapbox © OpenStreetMap' }
+  );
+  baseMbSatStreets = L.tileLayer(
+    'https://api.mapbox.com/styles/v1/mapbox/satellite-streets-v12/tiles/{z}/{x}/{y}?access_token=' + MB_TOKEN,
+    { tileSize:512, zoomOffset:-1, attribution:'© Mapbox © OpenStreetMap' }
+  );
+}
 
-// Switcher
-L.control.layers({
+const baseLayers = {
   'OSM': baseOSM,
-  'Mapbox Streets': baseMbStreets,
-  'Mapbox Satellite + Strade': baseMbSatStreets,
-  'Esri Satellite': baseEsriImagery,
-  'OpenTopoMap': baseOpenTopo,
   'Carto Light': baseLight,
-  'Carto Dark': baseDark
-},{},{collapsed:true}).addTo(map);
+  'Carto Dark': baseDark,
+  'Esri Satellite': baseEsriImagery
+};
+if (MB_TOKEN) {
+  baseLayers['Mapbox Streets'] = baseMbStreets;
+  baseLayers['Mapbox Satellite + Strade'] = baseMbSatStreets;
+}
+L.control.layers(baseLayers, {}, { collapsed:true }).addTo(map);
 
-  const overall = L.latLngBounds([]);
-  const legend  = document.getElementById('legend');
-  const lgBtn = document.getElementById('lgToggle');
+/* =======================
+   LEGENDA + STATISTICHE
+   ======================= */
 
-// Collassa di default su mobile
+const legend = document.getElementById('legend');
+const lgBtn  = document.getElementById('lgToggle');
+
+// su mobile parti chiusa
 if (window.matchMedia('(max-width: 768px)').matches) {
   legend.classList.add('collapsed');
   lgBtn.setAttribute('aria-expanded','false');
 }
-
 lgBtn.addEventListener('click', () => {
   legend.classList.toggle('collapsed');
   const expanded = !legend.classList.contains('collapsed');
   lgBtn.setAttribute('aria-expanded', String(expanded));
 });
 
-// Statistiche
-let totalKm = 0, totalMoveSec = 0;
-const layerRefs = []; // {layer, row, color, name}
-  const layers  = [];
-  let remaining = files.length, totalKm = 0;
+/* =======================
+   CARICAMENTO GPX
+   ======================= */
 
-  // Legenda fissa con checkbox
-  files.forEach((url, i) => {
+const overall = L.latLngBounds([]);
+let remaining = files.length;
+
+let totalKm = 0, totalMoveSec = 0;
+
+files.forEach((url, i) => {
   const color = colors[i % colors.length];
   const name  = url.split('/').pop().replace('.GPX','');
 
-  // Riga legenda (checkbox + swatch + label)
-  const row = document.createElement('div');
-  const cb  = document.createElement('input');
-  cb.type = 'checkbox'; cb.checked = true; cb.style.marginRight = '6px';
+  // Riga legenda
+  const row  = document.createElement('div');
+  const cb   = document.createElement('input');
+  cb.type = 'checkbox'; cb.checked = true;
 
-  const sw  = document.createElement('span');
-  sw.className = 'swatch'; sw.style.background = color;
-
-  const label = document.createElement('span'); label.textContent = name;
+  const sw   = document.createElement('span'); sw.className='swatch'; sw.style.background=color;
+  const label= document.createElement('span'); label.textContent = name;
 
   row.appendChild(cb); row.appendChild(sw); row.appendChild(label);
   legend.appendChild(row);
 
-  // GPX layer
   const gpx = new L.GPX(url, {
     async: true,
     polyline_options: { color, weight: 4, opacity: 0.95 },
@@ -195,47 +202,46 @@ const layerRefs = []; // {layer, row, color, name}
     }
   })
   .on('loaded', e => {
+    // estendi bbox complessivo
     overall.extend(e.target.getBounds());
 
-    // Statistiche per giorno
-    const distKm = (e.target.get_distance ? e.target.get_distance()/1000 : 0);
+    // statistiche giornaliere
+    const distKm  = (e.target.get_distance ? e.target.get_distance()/1000 : 0);
     const moveSec = (e.target.get_moving_time ? e.target.get_moving_time() : 0);
-    if (distKm) totalKm += distKm;
+
+    if (distKm) {
+      totalKm += distKm;
+      label.textContent = `${name} (${distKm.toFixed(1)} km)`;
+    }
     if (moveSec) totalMoveSec += moveSec;
 
-    // Appendi km al label (formattato)
-    if (distKm) label.textContent = `${name} (${distKm.toFixed(1)} km)`;
-
     if (--remaining === 0) {
-      // Totali a fine caricamento
+      // mostra totali
       const stats = document.createElement('div');
       stats.style.cssText = 'margin-top:8px;border-top:1px solid #eee;padding-top:8px;';
       const h = Math.floor(totalMoveSec/3600);
       const m = Math.round((totalMoveSec%3600)/60);
-      const timeTxt = totalMoveSec ? `, tempo mov.: ${h}h ${String(m).padStart(2,'0')}m` : '';
-      stats.innerHTML = `<b>Totale</b>: ${totalKm.toFixed(1)} km${timeTxt}`;
+      const t = totalMoveSec ? `, tempo mov.: ${h}h ${String(m).padStart(2,'0')}m` : '';
+      stats.innerHTML = `<b>Totale</b>: ${totalKm.toFixed(1)} km${t}`;
       legend.appendChild(stats);
 
-      map.fitBounds(overall,{padding:[20,20]});
+      map.fitBounds(overall, { padding:[20,20] });
     }
   })
-  .on('mouseover', e => { e.target.setStyle({weight:6}); e.target.bringToFront(); })
-  .on('mouseout',  e => { e.target.setStyle({weight:4}); });
+  .on('mouseover', e => { try { e.target.setStyle({weight:6}); e.target.bringToFront(); } catch(_){} })
+  .on('mouseout',  e => { try { e.target.setStyle({weight:4}); } catch(_){} });
 
   gpx.addTo(map);
 
-  // Toggle visibilità dalla checkbox
+  // Toggle visibilità dal checkbox
   cb.addEventListener('change', () => {
     if (cb.checked) { gpx.addTo(map); } else { map.removeLayer(gpx); }
   });
 
-  // Interazione dalla legenda:
-  // - hover riga = evidenzia traccia
-  // - click/tap riga = zoom su quel giorno
+  // Interazione dalla legenda: hover evidenzia, click zooma
   row.addEventListener('mouseenter', () => { try { gpx.setStyle({weight:6}); gpx.bringToFront(); } catch(_){} });
   row.addEventListener('mouseleave', () => { try { gpx.setStyle({weight:4}); } catch(_){} });
   row.addEventListener('click', () => {
-    // se è collassata, apri; altrimenti zooma
     if (legend.classList.contains('collapsed')) {
       legend.classList.remove('collapsed'); lgBtn.setAttribute('aria-expanded','true');
     } else {
@@ -243,34 +249,7 @@ const layerRefs = []; // {layer, row, color, name}
       if (b && b.isValid && b.isValid()) map.fitBounds(b, {padding:[20,20]});
     }
   });
-
-  layerRefs.push({ layer: gpx, row, color, name, checkbox: cb });
 });
-  // Zoom + Fit All
-  L.control.zoom({ position:'topleft' }).addTo(map);
-  const FitAll = L.Control.extend({
-    onAdd: function() {
-      const btn = L.DomUtil.create('button');
-      btn.textContent = 'Fit';
-      btn.title = 'Riquadra tutti';
-      btn.style.cssText = 'position:absolute;top:100px;left:10px;z-index:9999;padding:6px 8px;border-radius:6px;border:1px solid #ccc;background:#fff;cursor:pointer';
-      btn.onclick = () => map.fitBounds(overall,{padding:[20,20]});
-      return btn;
-    }
-  });
-  new FitAll({position:'topleft'}).addTo(map);
-
-  // Parametro ?day=06
-  const p = new URLSearchParams(location.search).get('day');
-  if (p) {
-    const wanted = files.findIndex(u => u.includes(`Giorno-${p}-`));
-    if (wanted >= 0) {
-      layers.forEach((Lr, idx) => {
-        if (idx !== wanted) { Lr.checkbox.checked = false; map.removeLayer(Lr.layer); }
-      });
-      layers[wanted].layer.once('loaded', e => map.fitBounds(e.target.getBounds(),{padding:[20,20]}));
-    }
-  }
 </script>
 </body>
 </html>
