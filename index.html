@@ -1,71 +1,93 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-<meta charset="utf-8"/>
-<title>I miei viaggi</title>
-<meta name="viewport" content="width=device-width, initial-scale=1"/>
-<style>
-  :root{
-    --btn-bg:#3ca66b;       /* verdolino */
-    --btn-bg-hover:#2f8c57;
-    --text:#fff;
-  }
-  body{
-    margin:0; background:#f6f7f9;
-    font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;
-    display:flex; min-height:100vh;
-    align-items:center; justify-content:center;
-  }
-  .wrap{ max-width:900px; padding:16px; text-align:center; }
-  h1{margin:0 0 20px; color:#333;}
+  <meta charset="utf-8" />
+  <title>I miei viaggi</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  .grid{
-    display:grid;
-    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); /* quadratini */
-    gap:14px;
-    justify-items:center;
-  }
+  <style>
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      min-height: 100vh;
+      background: #f9f9f9;
+    }
 
-  .trip{
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    justify-content:center;
-    gap:6px;
-    width:120px; height:120px;   /* francobollo */
-    background:var(--btn-bg);
-    color:var(--text);
-    text-decoration:none;
-    border-radius:10px;
-    padding:10px;
-    box-shadow:0 2px 6px rgba(0,0,0,.2);
-    font-size:13px;
-    font-weight:600;
-    transition:background .2s ease, transform .05s ease;
-  }
-  .trip:hover{ background:var(--btn-bg-hover); transform:translateY(-2px);}
-  .trip:active{ transform:translateY(0);}
-  .map-icon{ width:40px; height:auto; }
-  .flag{ width:22px; height:15px; border-radius:2px; }
-</style>
+    .container {
+      text-align: center;
+      padding: 24px;
+      max-width: 1000px;
+    }
+
+    h1 {
+      margin-bottom: 30px;
+      color: #333;
+    }
+
+    /* griglia responsive */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 16px;
+    }
+
+    /* bottone stile francobollo */
+    .btn {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      width: 160px;
+      height: 120px;
+      padding: 10px;
+      font-size: 14px;
+      font-weight: 600;
+      text-align: center;
+      color: #fff;
+      background-color: #28a745; /* verdino */
+      border-radius: 8px;
+      text-decoration: none;
+      transition: background-color .2s ease, transform .05s ease;
+      box-shadow: 0 2px 6px rgba(0,0,0,.15);
+      overflow-wrap: break-word;
+    }
+
+    .btn:hover   { background-color: #1e7e34; }
+    .btn:active  { transform: translateY(1px); }
+
+    .btn img.flag {
+      width: 26px;
+      height: 18px;
+      border-radius: 2px;
+      margin-bottom: 8px;
+      box-shadow: 0 0 2px rgba(0,0,0,.25);
+    }
+  </style>
 </head>
 <body>
-  <div class="wrap">
+  <div class="container">
     <h1>I miei viaggi</h1>
     <div class="grid">
 
-      <a class="trip" href="2025.07-Namibia.html">
-        <img class="map-icon" src="media/icons/namibia.svg" alt="">
-        <img class="flag" src="https://flagcdn.com/w20/na.png" alt="Namibia">
+      <a href="2025.07-Namibia.html" class="btn">
+        <img src="https://flagcdn.com/w20/na.png" alt="Namibia" class="flag">
         Namibia 2025
       </a>
 
-      <a class="trip" href="2024.10-Uganda-Scimpanzè.html">
-        <img class="map-icon" src="media/icons/uganda.svg" alt="">
-        <img class="flag" src="https://flagcdn.com/w20/ug.png" alt="Uganda">
+      <a href="2024.10-Uganda.html" class="btn">
+        <img src="https://flagcdn.com/w20/ug.png" alt="Uganda" class="flag">
         Uganda 2024
       </a>
 
+      <a href="1999.05-Pimperepettennusa.html" class="btn">
+        <img src="https://flagcdn.com/w20/it.png" alt="Fantasia" class="flag">
+        Pimperepettennusa 1999
+      </a>
+
+      <!-- aggiungi altri viaggi copiando un blocco <a> -->
     </div>
   </div>
 </body>
