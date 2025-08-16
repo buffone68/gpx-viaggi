@@ -207,26 +207,19 @@ files.forEach((url, i) => {
 
     // statistiche giornaliere
     const distKm  = (e.target.get_distance ? e.target.get_distance()/1000 : 0);
-    const moveSec = (e.target.get_moving_time ? e.target.get_moving_time() : 0);
 
     if (distKm) {
       totalKm += distKm;
       label.textContent = `${name} (${distKm.toFixed(1)} km)`;
     }
-    if (moveSec) totalMoveSec += moveSec;
 
     if (--remaining === 0) {
-      // mostra totali
-      const stats = document.createElement('div');
-      stats.style.cssText = 'margin-top:8px;border-top:1px solid #eee;padding-top:8px;';
-      const h = Math.floor(totalMoveSec/3600);
-      const m = Math.round((totalMoveSec%3600)/60);
-      const t = totalMoveSec ? `, tempo mov.: ${h}h ${String(m).padStart(2,'0')}m` : '';
-      stats.innerHTML = `<b>Totale</b>: ${totalKm.toFixed(1)} km${t}`;
-      legend.appendChild(stats);
-
-      map.fitBounds(overall, { padding:[20,20] });
-    }
+  // mostra totali SOLO km
+  const stats = document.createElement('div');
+  stats.style.cssText = 'margin-top:8px;border-top:1px solid #eee;padding-top:8px;';
+  stats.innerHTML = `<b>Totale</b>: ${totalKm.toFixed(1)} km`;
+  legend.appendChild(stats);
+}
   })
   .on('mouseover', e => { try { e.target.setStyle({weight:6}); e.target.bringToFront(); } catch(_){} })
   .on('mouseout',  e => { try { e.target.setStyle({weight:4}); } catch(_){} });
