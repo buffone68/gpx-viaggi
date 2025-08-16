@@ -10,14 +10,11 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet-gpx/1.7.0/gpx.min.js"></script>
 
-  <!-- Elevation plugin (profilo altimetrico) -->
-  <link rel="stylesheet" href="https://unpkg.com/leaflet-elevation/dist/leaflet-elevation.css"/>
-  <script src="https://unpkg.com/leaflet-elevation/dist/leaflet-elevation.min.js"></script>
-
   <style>
     html, body { height:100%; margin:0; }
     #map { height:100vh; position:relative; z-index:1; }
 
+    /* Bottone toggle legenda */
     .legend-toggle{
       position:absolute; top:14px; left:10px; z-index:10000;
       padding:6px 10px; border-radius:8px; border:1px solid #ccc;
@@ -26,6 +23,7 @@
       box-shadow:0 2px 7px rgba(0,0,0,.2);
     }
 
+    /* Legenda */
     .legend{
       position:absolute; top:60px; left:10px; background:#fff; padding:10px 12px;
       border-radius:8px; box-shadow:0 2px 7px rgba(0,0,0,.25);
@@ -37,15 +35,13 @@
     .legend .title{ font-weight:700; display:block; margin-bottom:6px }
     .legend div{ margin:3px 0 }
     .swatch{ display:inline-block; width:12px; height:12px; margin-right:8px; border-radius:3px; vertical-align:middle }
+    .legend input[type="checkbox"]{ transform: translateY(1px); margin-right:6px; }
 
-    /* su mobile: legenda chiusa di default */
+    /* Mobile: legenda parte collassata e un po' più stretta */
     @media (max-width: 768px){
       .legend{ max-width: 78vw }
       .legend.collapsed{ max-height: 40px }
     }
-
-    /* checkbox più “puliti” su iOS/macOS */
-    .legend input[type="checkbox"]{ transform: translateY(1px); margin-right:6px; }
   </style>
 </head>
 <body>
@@ -65,8 +61,8 @@
    CONFIG
    ======================= */
 
-// (Opzionale) token Mapbox: per stili con etichette migliori
-const MB_TOKEN = ''; // es: 'pk.eyJ1Ijoi…'  — lascia vuoto per usare solo OSM/Carto/Esri
+// (Opzionale) se vuoi anche gli stili Mapbox con etichette migliori, metti qui il token
+const MB_TOKEN = ''; // es.: 'pk.eyJ1Ijoi…'  — se resti vuoto usi solo OSM/Carto/Esri
 
 // Link dei GPX (in ordine cronologico)
 const files = [
@@ -92,7 +88,7 @@ const colors = ['#e41a1c','#377eb8','#4daf4a','#984ea3',
                 '#1b9e77','#d95f02','#7570b3','#e7298a',
                 '#66a61e','#e6ab02'];
 
-// Marker start/end in SVG inline (nessun asset esterno)
+// Icone start/end come SVG inline
 const startIconUrl = 'data:image/svg+xml;utf8,' + encodeURIComponent(
   `<svg xmlns="http://www.w3.org/2000/svg" width="26" height="41" viewBox="0 0 26 41">
      <path d="M13 0C6 0 0 6 0 13c0 11 13 28 13 28s13-17 13-28C26 6 20 0 13 0z" fill="#2ECC71"/>
@@ -154,9 +150,8 @@ if (MB_TOKEN) {
 L.control.layers(baseLayers, {}, { collapsed:true }).addTo(map);
 
 /* =======================
-   LEGENDA + STATISTICHE
+   LEGENDA (toggle)
    ======================= */
-
 const legend = document.getElementById('legend');
 const lgBtn  = document.getElementById('lgToggle');
 
@@ -172,23 +167,15 @@ lgBtn.addEventListener('click', () => {
 });
 
 /* =======================
-   PROFILO ALTIMETRICO
-   ======================= */
-
-const elev = L.control.elevation({
-  position: 'bottomright',
-  theme: 'steelblue-theme',   // stile pronto del plugin
-  height: 180,
-  collapsed: true             // parte chiuso; clicca l’icona per aprire
-}).addTo(map);
-
-/* =======================
-   CARICAMENTO GPX
+   CARICAMENTO GPX + STATISTICHE
    ======================= */
 
 const overall = L.latLngBounds([]);
 let remaining = files.length;
-let totalKm = 0;
+
+let totalKm = 0;      // sempre
+let totalUp = 0;      // se disponibili
+let totalDown = 0;
 
 files.forEach((url, i) => {
   const color = colors[i % colors.length];
@@ -198,10 +185,8 @@ files.forEach((url, i) => {
   const row  = document.createElement('div');
   const cb   = document.createElement('input');
   cb.type = 'checkbox'; cb.checked = true;
-
   const sw   = document.createElement('span'); sw.className='swatch'; sw.style.background=color;
   const label= document.createElement('span'); label.textContent = name;
-
   row.appendChild(cb); row.appendChild(sw); row.appendChild(label);
   legend.appendChild(row);
 
@@ -215,26 +200,36 @@ files.forEach((url, i) => {
       wptIconUrls: {}
     }
   })
-  .on('addline', e => {
-    // aggiunge la traccia al profilo altimetrico
-    try { elev.addData(e.line); } catch(_) {}
-  })
   .on('loaded', e => {
     overall.extend(e.target.getBounds());
 
-    const distKm  = (e.target.get_distance ? e.target.get_distance()/1000 : 0);
+    // distanza in km
+    const distKm = e.target.get_distance ? (e.target.get_distance()/1000) : 0;
     if (distKm) {
       totalKm += distKm;
       label.textContent = `${name} (${distKm.toFixed(1)} km)`;
     }
 
+    // dislivelli (se la libreria li calcola)
+    const up   = e.target.get_elevation_gain ? e.target.get_elevation_gain() : 0;
+    const down = e.target.get_elevation_loss ? e.target.get_elevation_loss() : 0;
+    totalUp   += up;
+    totalDown += down;
+
     if (--remaining === 0) {
+      // Totali
       const stats = document.createElement('div');
       stats.style.cssText = 'margin-top:8px;border-top:1px solid #eee;padding-top:8px;';
-      stats.innerHTML = `<b>Totale</b>: ${totalKm.toFixed(1)} km`;
+      let html = `<b>Totale</b>: ${totalKm.toFixed(1)} km`;
+      // mostra ↑/↓ solo se non sono tutti zero
+      if (totalUp > 0 || totalDown > 0) {
+        html += `<br>↑ ${Math.round(totalUp)} m, ↓ ${Math.round(totalDown)} m`;
+      }
+      stats.innerHTML = html;
       legend.appendChild(stats);
 
-      map.fitBounds(overall, { padding:[20,20] });
+      // centra la mappa su tutte le tracce
+      if (overall.isValid()) map.fitBounds(overall, {padding:[20,20]});
     }
   })
   .on('mouseover', e => { try { e.target.setStyle({weight:6}); e.target.bringToFront(); } catch(_){} })
