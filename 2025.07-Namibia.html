@@ -113,7 +113,10 @@ const endIconUrl = 'data:image/svg+xml;utf8,' + encodeURIComponent(
    MAPPA + BASE LAYERS
    ======================= */
 
-const map = L.map('map', { zoomControl: true }).setView([-22.56, 17.08], 5);
+map.fitBounds([
+  [-28.9, 11.5],   // sud-ovest
+  [-16.9, 25.3]    // nord-est
+]);
 
 // OSM
 const baseOSM = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
