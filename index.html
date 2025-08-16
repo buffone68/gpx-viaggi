@@ -31,10 +31,10 @@
     .grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-      gap: 20px;
+      gap: 16px;
     }
 
-    /* francobollo */
+    /* bottone stile francobollo */
     .btn {
       display: flex;
       flex-direction: column;
@@ -48,15 +48,11 @@
       text-align: center;
       color: #fff;
       background-color: #28a745; /* verdino */
-      border-radius: 6px;
+      border-radius: 8px;
       text-decoration: none;
-      transition: transform .05s ease;
-      box-shadow: 0 2px 6px rgba(0,0,0,.2);
-
-      /* bordo dentellato */
-      position: relative;
-      border: 6px solid #fff;
-      outline: 1px dashed rgba(0,0,0,.15);
+      transition: background-color .2s ease, transform .05s ease;
+      box-shadow: 0 2px 6px rgba(0,0,0,.15);
+      overflow-wrap: break-word;
     }
 
     .btn:hover   { background-color: #1e7e34; }
@@ -76,7 +72,7 @@
     <h1>I miei viaggi</h1>
     <div class="grid">
 
-      <a href="2025.07-Namibia.html" class="btn">
+      <a href="2025.07-Namibia-Scimpanzè.html" class="btn">
         <img src="https://flagcdn.com/w20/na.png" alt="Namibia" class="flag">
         Namibia 2025
       </a>
@@ -91,6 +87,7 @@
         Pimperepettennusa 1999
       </a>
 
+      <!-- aggiungi altri viaggi copiando un blocco <a> -->
     </div>
   </div>
 </body>
