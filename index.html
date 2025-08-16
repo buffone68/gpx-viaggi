@@ -68,10 +68,64 @@
 
   // Mappa + basemap
   const map = L.map('map', { preferCanvas:true }).setView([-22.56, 17.08], 5);
-  const baseOSM   = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'© OpenStreetMap'}).addTo(map);
-  const baseLight = L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',{attribution:'© OpenStreetMap, © CARTO'});
-  const baseDark  = L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',{attribution:'© OpenStreetMap, © CARTO'});
-  L.control.layers({OSM:baseOSM,'Carto Light':baseLight,'Carto Dark':baseDark},{},{collapsed:true}).addTo(map);
+  // OSM classico
+const baseOSM = L.tileLayer(
+  'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+  { attribution: '© OpenStreetMap contributors' }
+).addTo(map);
+
+// Carto
+const baseLight = L.tileLayer(
+  'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',
+  { attribution: '© OpenStreetMap, © CARTO' }
+);
+const baseDark = L.tileLayer(
+  'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',
+  { attribution: '© OpenStreetMap, © CARTO' }
+);
+
+// Mapbox (etichette ricche). Usa il tuo token:
+const MB_TOKEN = 'PK_TUO_TOKEN_MAPBOX_QUI';
+
+const baseMbStreets = L.tileLayer(
+  'https://api.mapbox.com/styles/v1/mapbox/streets-v12/tiles/{z}/{x}/{y}?access_token=' + MB_TOKEN,
+  {
+    tileSize: 512, zoomOffset: -1,
+    attribution: '© Mapbox © OpenStreetMap'
+  }
+);
+
+// Satellite con strade sovrapposte (etichette leggibili)
+const baseMbSatStreets = L.tileLayer(
+  'https://api.mapbox.com/styles/v1/mapbox/satellite-streets-v12/tiles/{z}/{x}/{y}?access_token=' + MB_TOKEN,
+  {
+    tileSize: 512, zoomOffset: -1,
+    attribution: '© Mapbox © OpenStreetMap'
+  }
+);
+
+// Esri satellite “puro”
+const baseEsriImagery = L.tileLayer(
+  'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
+  { attribution: 'Tiles © Esri' }
+);
+
+// OpenTopoMap (rilievo/curve di livello)
+const baseOpenTopo = L.tileLayer(
+  'https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png',
+  { attribution: '© OpenStreetMap, SRTM | © OpenTopoMap' }
+);
+
+// Switcher
+L.control.layers({
+  'OSM': baseOSM,
+  'Mapbox Streets': baseMbStreets,
+  'Mapbox Satellite + Strade': baseMbSatStreets,
+  'Esri Satellite': baseEsriImagery,
+  'OpenTopoMap': baseOpenTopo,
+  'Carto Light': baseLight,
+  'Carto Dark': baseDark
+},{},{collapsed:true}).addTo(map);
 
   const overall = L.latLngBounds([]);
   const legend  = document.getElementById('legend');
