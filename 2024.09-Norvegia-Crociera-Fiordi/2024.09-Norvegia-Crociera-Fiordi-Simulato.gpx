@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gpx version="1.1" creator="GPX-simulato-by-ChatGPT" xmlns="http://www.topografix.com/GPX/1/1">
+  <metadata>
+    <name>Havila/Hurtigruten Bergen–Kirkenes–Bergen (simulato)</name>
+    <time>2025-01-01T00:00:00Z</time>
+  </metadata>
+
+  <!-- === Waypoints: tutti i porti === -->
+  <wpt lat="60.3913" lon="5.3221"><name>Bergen</name></wpt>
+  <wpt lat="61.5996" lon="5.0328"><name>Florø</name></wpt>
+  <wpt lat="61.9363" lon="5.1131"><name>Måløy</name></wpt>
+  <wpt lat="62.3440" lon="5.6550"><name>Torvik</name></wpt>
+  <wpt lat="62.4723" lon="6.1549"><name>Ålesund</name></wpt>
+  <wpt lat="62.7372" lon="7.1591"><name>Molde</name></wpt>
+  <wpt lat="63.1106" lon="7.7280"><name>Kristiansund</name></wpt>
+  <wpt lat="63.4305" lon="10.3951"><name>Trondheim</name></wpt>
+  <wpt lat="64.8620" lon="11.2390"><name>Rørvik</name></wpt>
+  <wpt lat="65.4746" lon="12.2140"><name>Brønnøysund</name></wpt>
+  <wpt lat="66.0221" lon="12.6316"><name>Sandnessjøen</name></wpt>
+  <wpt lat="66.1980" lon="13.0240"><name>Nesna</name></wpt>
+  <wpt lat="66.8720" lon="13.7070"><name>Ørnes</name></wpt>
+  <wpt lat="67.2818" lon="14.3776"><name>Bodø</name></wpt>
+  <wpt lat="68.1395" lon="13.8497"><name>Stamsund</name></wpt>
+  <wpt lat="68.2342" lon="14.5683"><name>Svolvær</name></wpt>
+  <wpt lat="68.5668" lon="14.9101"><name>Stokmarknes</name></wpt>
+  <wpt lat="68.6953" lon="15.4160"><name>Sortland</name></wpt>
+  <wpt lat="68.9928" lon="15.6680"><name>Risøyhamn</name></wpt>
+  <wpt lat="68.7987" lon="16.5416"><name>Harstad</name></wpt>
+  <wpt lat="69.2340" lon="18.0080"><name>Finnsnes</name></wpt>
+  <wpt lat="69.6496" lon="18.9560"><name>Tromsø</name></wpt>
+  <wpt lat="70.0303" lon="20.9712"><name>Skjervøy</name></wpt>
+  <wpt lat="70.2390" lon="22.3470"><name>Øksfjord</name></wpt>
+  <wpt lat="70.6633" lon="23.6821"><name>Hammerfest</name></wpt>
+  <wpt lat="71.0000" lon="24.6667"><name>Havøysund</name></wpt>
+  <wpt lat="70.9821" lon="25.9700"><name>Honningsvåg</name></wpt>
+  <wpt lat="70.9453" lon="27.3320"><name>Kjøllefjord</name></wpt>
+  <wpt lat="71.0350" lon="27.8490"><name>Mehamn</name></wpt>
+  <wpt lat="70.8591" lon="29.0860"><name>Berlevåg</name></wpt>
+  <wpt lat="70.6345" lon="29.7220"><name>Båtsfjord</name></wpt>
+  <wpt lat="70.3705" lon="31.1100"><name>Vardø</name></wpt>
+  <wpt lat="70.0740" lon="29.7480"><name>Vadsø</name></wpt>
+  <wpt lat="69.7250" lon="30.0490"><name>Kirkenes</name></wpt>
+
+  <!-- === Traccia: andata + ritorno (segmenti porto-porto) === -->
+  <trk>
+    <name>Bergen → Kirkenes → Bergen (sim)</name>
+    <trkseg>
+      <!-- Nordbound -->
+      <trkpt lat="60.3913" lon="5.3221"/><!-- Bergen -->
+      <trkpt lat="61.5996" lon="5.0328"/><!-- Florø -->
+      <trkpt lat="61.9363" lon="5.1131"/><!-- Måløy -->
+      <trkpt lat="62.3440" lon="5.6550"/><!-- Torvik -->
+      <trkpt lat="62.4723" lon="6.1549"/><!-- Ålesund -->
+      <trkpt lat="62.7372" lon="7.1591"/><!-- Molde -->
+      <trkpt lat="63.1106" lon="7.7280"/><!-- Kristiansund -->
+      <trkpt lat="63.4305" lon="10.3951"/><!-- Trondheim -->
+      <trkpt lat="64.8620" lon="11.2390"/><!-- Rørvik -->
+      <trkpt lat="65.4746" lon="12.2140"/><!-- Brønnøysund -->
+      <trkpt lat="66.0221" lon="12.6316"/><!-- Sandnessjøen -->
+      <trkpt lat="66.1980" lon="13.0240"/><!-- Nesna -->
+      <trkpt lat="66.8720" lon="13.7070"/><!-- Ørnes -->
+      <trkpt lat="67.2818" lon="14.3776"/><!-- Bodø -->
+      <trkpt lat="68.1395" lon="13.8497"/><!-- Stamsund -->
+      <trkpt lat="68.2342" lon="14.5683"/><!-- Svolvær -->
+      <trkpt lat="68.5668" lon="14.9101"/><!-- Stokmarknes -->
+      <trkpt lat="68.6953" lon="15.4160"/><!-- Sortland -->
+      <trkpt lat="68.9928" lon="15.6680"/><!-- Risøyhamn -->
+      <trkpt lat="68.7987" lon="16.5416"/><!-- Harstad -->
+      <trkpt lat="69.2340" lon="18.0080"/><!-- Finnsnes -->
+      <trkpt lat="69.6496" lon="18.9560"/><!-- Tromsø -->
+      <trkpt lat="70.0303" lon="20.9712"/><!-- Skjervøy -->
+      <trkpt lat="70.2390" lon="22.3470"/><!-- Øksfjord -->
+      <trkpt lat="70.6633" lon="23.6821"/><!-- Hammerfest -->
+      <trkpt lat="71.0000" lon="24.6667"/><!-- Havøysund -->
+      <trkpt lat="70.9821" lon="25.9700"/><!-- Honningsvåg -->
+      <trkpt lat="70.9453" lon="27.3320"/><!-- Kjøllefjord -->
+      <trkpt lat="71.0350" lon="27.8490"/><!-- Mehamn -->
+      <trkpt lat="70.8591" lon="29.0860"/><!-- Berlevåg -->
+      <trkpt lat="70.6345" lon="29.7220"/><!-- Båtsfjord -->
+      <trkpt lat="70.3705" lon="31.1100"/><!-- Vardø -->
+      <trkpt lat="70.0740" lon="29.7480"/><!-- Vadsø -->
+      <trkpt lat="69.7250" lon="30.0490"/><!-- Kirkenes -->
+
+      <!-- Southbound (ritorno) -->
+      <trkpt lat="70.0740" lon="29.7480"/><!-- Vadsø -->
+      <trkpt lat="70.3705" lon="31.1100"/><!-- Vardø -->
+      <trkpt lat="70.6345" lon="29.7220"/><!-- Båtsfjord -->
+      <trkpt lat="70.8591" lon="29.0860"/><!-- Berlevåg -->
+      <trkpt lat="71.0350" lon="27.8490"/><!-- Mehamn -->
+      <trkpt lat="70.9453" lon="27.3320"/><!-- Kjøllefjord -->
+      <trkpt lat="70.9821" lon="25.9700"/><!-- Honningsvåg -->
+      <trkpt lat="71.0000" lon="24.6667"/><!-- Havøysund -->
+      <trkpt lat="70.6633" lon="23.6821"/><!-- Hammerfest -->
+      <trkpt lat="70.2390" lon="22.3470"/><!-- Øksfjord -->
+      <trkpt lat="70.0303" lon="20.9712"/><!-- Skjervøy -->
+      <trkpt lat="69.6496" lon="18.9560"/><!-- Tromsø -->
+      <trkpt lat="69.2340" lon="18.0080"/><!-- Finnsnes -->
+      <trkpt lat="68.7987" lon="16.5416"/><!-- Harstad -->
+      <trkpt lat="68.9928" lon="15.6680"/><!-- Risøyhamn -->
+      <trkpt lat="68.6953" lon="15.4160"/><!-- Sortland -->
+      <trkpt lat="68.5668" lon="14.9101"/><!-- Stokmarknes -->
+      <trkpt lat="68.2342" lon="14.5683"/><!-- Svolvær -->
+      <trkpt lat="68.1395" lon="13.8497"/><!-- Stamsund -->
+      <trkpt lat="67.2818" lon="14.3776"/><!-- Bodø -->
+      <trkpt lat="66.8720" lon="13.7070"/><!-- Ørnes -->
+      <trkpt lat="66.1980" lon="13.0240"/><!-- Nesna -->
+      <trkpt lat="66.0221" lon="12.6316"/><!-- Sandnessjøen -->
+      <trkpt lat="65.4746" lon="12.2140"/><!-- Brønnøysund -->
+      <trkpt lat="64.8620" lon="11.2390"/><!-- Rørvik -->
+      <trkpt lat="63.4305" lon="10.3951"/><!-- Trondheim -->
+      <trkpt lat="63.1106" lon="7.7280"/><!-- Kristiansund -->
+      <trkpt lat="62.7372" lon="7.1591"/><!-- Molde -->
+      <trkpt lat="62.4723" lon="6.1549"/><!-- Ålesund -->
+      <trkpt lat="62.3440" lon="5.6550"/><!-- Torvik -->
+      <trkpt lat="61.9363" lon="5.1131"/><!-- Måløy -->
+      <trkpt lat="61.5996" lon="5.0328"/><!-- Florø -->
+      <trkpt lat="60.3913" lon="5.3221"/><!-- Bergen -->
+    </trkseg>
+  </trk>
+</gpx>
