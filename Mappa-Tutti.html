@@ -2,84 +2,94 @@
 <html lang="it">
 <head>
   <meta charset="utf-8" />
-  <title>Tutti i viaggi</title>
+  <title>Tutti i viaggi – GPX (solo tracciati)</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+
+  <!-- Leaflet + Leaflet-GPX -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.css"/>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet-gpx/1.7.0/gpx.min.js"></script>
+
   <style>
     html, body { height:100%; margin:0; }
-    #map { width:100%; height:100%; }
-    /* bottone Menu */
-    .menu-btn{
-      position:absolute; right:12px; bottom:14px; z-index:10000;
-      padding:6px 12px; border-radius:8px; border:1px solid #ccc;
-      background:#fff; color:#000; text-decoration:none;
-      font:14px system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;
-      box-shadow:0 2px 7px rgba(0,0,0,.2);
-    }
-    .menu-btn:hover{ background:#f8f8f8; }
+    #map { height:100%; }
   </style>
 </head>
 <body>
   <div id="map"></div>
-  <a class="menu-btn" href="index.html">🏠 Menu</a>
 
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-  <script src="https://unpkg.com/leaflet-gpx@1.7.0/gpx.js"></script>
-  <script>
-    // mappa
-    const map = L.map('map').setView([20, 10], 2);
+<script>
+/* =======================
+   MAPPA BASE (nessuna legenda/marker)
+   ======================= */
+const map = L.map('map', { zoomControl: true }).setView([15, 10], 2);
 
-    // sfondi
-    const osm = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      maxZoom: 19, attribution: '© OpenStreetMap'
-    }).addTo(map);
-    const esri = L.tileLayer(
-      'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
-      { attribution: 'Tiles © Esri' }
-    );
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+  attribution: '© OpenStreetMap'
+}).addTo(map);
 
-    L.control.layers({ 'OSM': osm, 'Esri Satellite': esri }, null, {collapsed:true}).addTo(map);
+/* =======================
+   LISTE GPX PER STATO
+   (aggiungi qui altri paesi copiando lo schema)
+   ======================= */
 
-    // === Inserisci qui TUTTI i tuoi GPX (usa gli URL raw di GitHub) ===
-    const files = [
-      // Esempi: SOSTITUISCI con i tuoi
-      'https://raw.githubusercontent.com/buffone68/gpx-viaggi/refs/heads/main/2025.07-Namibia/2025-07-28-Giorno-01-Namibia.GPX',
-      'https://raw.githubusercontent.com/buffone68/gpx-viaggi/refs/heads/main/2024.10-Uganda-Scimpanzè/2024-10-24-Giorno-01-Uganda-Scimpanzè.GPX',
-      'https://raw.githubusercontent.com/buffone68/gpx-viaggi/refs/heads/main/2024.04-Sri-Lanka-Solo/2024-04-25-Giorno-01-Sri-Lanka-Solo.GPX',
-      // ...aggiungi qui TUTTI gli altri file (anche tutti i giorni)
-    ];
+// NAMIBIA (rosso)
+const namibia = [
+  'https://raw.githubusercontent.com/buffone68/gpx-viaggi/refs/heads/main/2025.07-Namibia/2025-07-28-Giorno-01-Namibia.GPX',
+  'https://raw.githubusercontent.com/buffone68/gpx-viaggi/refs/heads/main/2025.07-Namibia/2025-07-29-Giorno-02-Namibia.GPX',
+  'https://raw.githubusercontent.com/buffone68/gpx-viaggi/refs/heads/main/2025.07-Namibia/2025-08-04-Giorno-08-Namibia.GPX'
+];
 
-    // tavolozza colori semplice (verrà ciclata)
-    const colors = ['#e41a1c','#377eb8','#4daf4a','#984ea3','#ff7f00',
-                    '#a65628','#f781bf','#1b9e77','#d95f02','#7570b3'];
+// UGANDA (blu)
+const uganda = [
+  'https://raw.githubusercontent.com/buffone68/gpx-viaggi/refs/heads/main/2024.10-Uganda-Scimpanzè/2024-10-24-Giorno-01-Uganda-Scimpanzè.GPX',
+  'https://raw.githubusercontent.com/buffone68/gpx-viaggi/refs/heads/main/2024.10-Uganda-Scimpanzè/2024-10-31-Giorno-08-Uganda-Scimpanzè.GPX'
+];
 
-    // inquadra tutto
-    const overall = L.latLngBounds([]);
-    let remaining = files.length;
+// SRI LANKA (verde)
+const srilanka = [
+  'https://raw.githubusercontent.com/buffone68/gpx-viaggi/refs/heads/main/2024.04-Sri-Lanka-Solo/2024-04-25-Giorno-01-Sri-Lanka-Solo.GPX',
+  'https://raw.githubusercontent.com/buffone68/gpx-viaggi/refs/heads/main/2024.04-Sri-Lanka-Solo/2024-05-04-Giorno-10-Sri-Lanka-Solo.GPX'
+];
 
-    files.forEach((url, i) => {
-      const color = colors[i % colors.length];
+/* =======================
+   RENDER DELLE TRACCE (SENZA MARKER)
+   ======================= */
 
-      new L.GPX(url, {
-        async: true,
-        polyline_options: { color, weight: 3, opacity: 0.95 },
-        marker_options: {
-          // niente pin: solo linee per colpo d'occhio
-          startIconUrl: null,
-          endIconUrl: null,
-          shadowUrl: null,
-          wptIconUrls: {}
-        }
-      })
-      .on('loaded', e => {
-        const b = e.target.getBounds?.();
-        if (b && b.isValid && b.isValid()) overall.extend(b);
-        if (--remaining === 0 && overall.isValid()) {
-          map.fitBounds(overall, { padding: [20,20] });
-        }
-      })
-      .addTo(map);
-    });
-  </script>
+const overall = L.latLngBounds([]);
+
+function addCountry(files, color) {
+  files.forEach(url => {
+    const g = new L.GPX(url, {
+      async: true,
+      // solo linea: no start/end, no waypoints
+      marker_options: { startIconUrl: null, endIconUrl: null, shadowUrl: null, wptIconUrls: {} },
+      polyline_options: { color, weight: 3.5, opacity: 0.95 }
+    })
+    .on('loaded', e => {
+      const b = e.target.getBounds && e.target.getBounds();
+      if (b && b.isValid()) overall.extend(b);
+      // al termine del caricamento di tutte le tracce faremo fitBounds (vedi sotto)
+    })
+    .addTo(map);
+  });
+}
+
+// colori per stato
+addCountry(namibia,  '#e41a1c'); // rosso
+addCountry(uganda,   '#377eb8'); // blu
+addCountry(srilanka, '#4daf4a'); // verde
+
+// dopo un attimo, adatta la vista a tutto
+setTimeout(() => { if (overall.isValid()) map.fitBounds(overall, {padding:[20,20]}); }, 1000);
+
+/* =======================
+   COME AGGIUNGERE ALTRI STATI
+   -----------------------
+   1) Crea un array con gli URL raw dei GPX (come sopra).
+   2) Chiama addCountry(mioArray, '#colore').
+   Fatto.
+   ======================= */
+</script>
 </body>
 </html>
