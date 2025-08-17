@@ -271,9 +271,25 @@ const cinainliberta = [
   'https://raw.githubusercontent.com/buffone68/gpx-viaggi/refs/heads/main/2018.08-Cina-in-libertà/2018-08-26-Giorno-21-Cina-in-libertà.gpx'
 ];
 
-
-
-
+// SIKKIM BUTHAN
+const sikkimbuthan = [
+  'https://raw.githubusercontent.com/buffone68/gpx-viaggi/refs/heads/main/2017.09-Sikkim-Bhutan/2017-09-23-Giorno-01-Sikkim-Bhutan.gpx',
+  'https://raw.githubusercontent.com/buffone68/gpx-viaggi/refs/heads/main/2017.09-Sikkim-Bhutan/2017-09-24-Giorno-02-Sikkim-Bhutan.gpx',
+  'https://raw.githubusercontent.com/buffone68/gpx-viaggi/refs/heads/main/2017.09-Sikkim-Bhutan/2017-09-25-Giorno-03-Sikkim-Bhutan.gpx',
+  'https://raw.githubusercontent.com/buffone68/gpx-viaggi/refs/heads/main/2017.09-Sikkim-Bhutan/2017-09-26-Giorno-04-Sikkim-Bhutan.gpx',
+  'https://raw.githubusercontent.com/buffone68/gpx-viaggi/refs/heads/main/2017.09-Sikkim-Bhutan/2017-09-27-Giorno-05-Sikkim-Bhutan.gpx',
+  'https://raw.githubusercontent.com/buffone68/gpx-viaggi/refs/heads/main/2017.09-Sikkim-Bhutan/2017-09-28-Giorno-06-Sikkim-Bhutan.gpx',
+  'https://raw.githubusercontent.com/buffone68/gpx-viaggi/refs/heads/main/2017.09-Sikkim-Bhutan/2017-09-29-Giorno-07-Sikkim-Bhutan.gpx',
+  'https://raw.githubusercontent.com/buffone68/gpx-viaggi/refs/heads/main/2017.09-Sikkim-Bhutan/2017-09-30-Giorno-08-Sikkim-Bhutan.gpx',
+  'https://raw.githubusercontent.com/buffone68/gpx-viaggi/refs/heads/main/2017.09-Sikkim-Bhutan/2017-10-01-Giorno-09-Sikkim-Bhutan.gpx',
+  'https://raw.githubusercontent.com/buffone68/gpx-viaggi/refs/heads/main/2017.09-Sikkim-Bhutan/2017-10-02-Giorno-10-Sikkim-Bhutan.gpx',
+  'https://raw.githubusercontent.com/buffone68/gpx-viaggi/refs/heads/main/2017.09-Sikkim-Bhutan/2017-10-03-Giorno-11-Sikkim-Bhutan.gpx',
+  'https://raw.githubusercontent.com/buffone68/gpx-viaggi/refs/heads/main/2017.09-Sikkim-Bhutan/2017-10-04-Giorno-12-Sikkim-Bhutan.gpx',
+  'https://raw.githubusercontent.com/buffone68/gpx-viaggi/refs/heads/main/2017.09-Sikkim-Bhutan/2017-10-05-Giorno-13-Sikkim-Bhutan.gpx',
+  'https://raw.githubusercontent.com/buffone68/gpx-viaggi/refs/heads/main/2017.09-Sikkim-Bhutan/2017-10-06-Giorno-14-Sikkim-Bhutan.gpx',
+  'https://raw.githubusercontent.com/buffone68/gpx-viaggi/refs/heads/main/2017.09-Sikkim-Bhutan/2017-10-07-Giorno-15-Sikkim-Bhutan.gpx',
+  'https://raw.githubusercontent.com/buffone68/gpx-viaggi/refs/heads/main/2017.09-Sikkim-Bhutan/2017-10-08-Giorno-16-Sikkim-Bhutan.gpx'
+];
 
 
 
@@ -309,7 +325,9 @@ const flags = [
   { name: "Uzbekistan",  lat: 41.4, lon: 64.6,  icon: "https://flagcdn.com/w40/uz.png" },
   { name: "Turkmenistan",lat: 39.1, lon: 59.4,  icon: "https://flagcdn.com/w40/tm.png" },
   { name: "Iran",        lat: 32.4, lon: 53.7,  icon: "https://flagcdn.com/w40/ir.png" },
-  { name: "Turchia",     lat: 39.0, lon: 35.0,  icon: "https://flagcdn.com/w40/tr.png" }
+  { name: "Turchia",     lat: 39.0, lon: 35.0,  icon: "https://flagcdn.com/w40/tr.png" },
+  { name: "India (Sikkim)", lat: 27.3, lon: 88.6, icon: "https://flagcdn.com/w40/in.png" },
+  { name: "Bhutan",         lat: 27.5, lon: 90.4, icon: "https://flagcdn.com/w40/bt.png" }
 ];
 
 flags.forEach(f => {
@@ -357,6 +375,7 @@ addCountry(dancalia);
 addCountry(boliviacile);
 addCountry(istanbulcappadocia);
 addCountry(cinainliberta);
+addCountry(sikkimbuthan);
 addCountry(laviadelritorno);
 
 // adatta la vista a tutto quando ha finito di caricare (piccolo delay)
