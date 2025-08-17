@@ -226,7 +226,26 @@ const boliviacile = [
   'https://raw.githubusercontent.com/buffone68/gpx-viaggi/refs/heads/main/2019.08-Bolivia-Cile/2019-08-22-Giorno-19-Bolivia-Cile.gpx',
   'https://raw.githubusercontent.com/buffone68/gpx-viaggi/refs/heads/main/2019.08-Bolivia-Cile/2019-08-23-Giorno-20-Bolivia-Cile.gpx'
 ];
-  
+
+// ISTANBUL CAPPADOCIA
+const istanbulcappadocia = [
+  'https://raw.githubusercontent.com/buffone68/gpx-viaggi/refs/heads/main/2019.04-Istanbul-Cappadocia/2025-07-28-Giorno-01-Namibia.GPX',
+  'https://raw.githubusercontent.com/buffone68/gpx-viaggi/refs/heads/main/2025.07-Namibia/2019-04-21-Giorno-01-Istanbul-Cappadocia.gpx',
+  'https://raw.githubusercontent.com/buffone68/gpx-viaggi/refs/heads/main/2025.07-Namibia/2019-04-21-Giorno-02-Istanbul-Cappadocia.gpx',
+  'https://raw.githubusercontent.com/buffone68/gpx-viaggi/refs/heads/main/2025.07-Namibia/2019-04-21-Giorno-03-Istanbul-Cappadocia.gpx',
+  'https://raw.githubusercontent.com/buffone68/gpx-viaggi/refs/heads/main/2025.07-Namibia/2019-04-21-Giorno-04-Istanbul-Cappadocia.gpx',
+  'https://raw.githubusercontent.com/buffone68/gpx-viaggi/refs/heads/main/2025.07-Namibia/2019-04-21-Giorno-05-Istanbul-Cappadocia.gpx',
+  'https://raw.githubusercontent.com/buffone68/gpx-viaggi/refs/heads/main/2025.07-Namibia/2019-04-21-Giorno-06-Istanbul-Cappadocia.gpx',
+  'https://raw.githubusercontent.com/buffone68/gpx-viaggi/refs/heads/main/2025.07-Namibia/2019-04-21-Giorno-07-Istanbul-Cappadocia.gpx',
+  'https://raw.githubusercontent.com/buffone68/gpx-viaggi/refs/heads/main/2025.07-Namibia/2019-04-21-Giorno-08-Istanbul-Cappadocia.gpx',
+  'https://raw.githubusercontent.com/buffone68/gpx-viaggi/refs/heads/main/2025.07-Namibia/2019-04-21-Giorno-09-Istanbul-Cappadocia.gpx',
+  'https://raw.githubusercontent.com/buffone68/gpx-viaggi/refs/heads/main/2025.07-Namibia/2019-04-21-Giorno-10-Istanbul-Cappadocia.gpx',
+  'https://raw.githubusercontent.com/buffone68/gpx-viaggi/refs/heads/main/2025.07-Namibia/2019-05-01-Giorno-11-Istanbul-Cappadocia.gpx',
+  'https://raw.githubusercontent.com/buffone68/gpx-viaggi/refs/heads/main/2025.07-Namibia/2019-05-01-Giorno-12-Istanbul-Cappadocia.gpx',
+  'https://raw.githubusercontent.com/buffone68/gpx-viaggi/refs/heads/main/2025.07-Namibia/2019-05-01-Giorno-13-Istanbul-Cappadocia.gpx',
+  'https://raw.githubusercontent.com/buffone68/gpx-viaggi/refs/heads/main/2025.07-Namibia/2019-05-01-Giorno-14-Istanbul-Cappadocia.gpx',
+  'https://raw.githubusercontent.com/buffone68/gpx-viaggi/refs/heads/main/2025.07-Namibia/2019-05-01-Giorno-15-Istanbul-Cappadocia.gpx'
+];
   
 /* =======================
    BANDIERINE (restano come sono)
@@ -244,7 +263,8 @@ const flags = [
   { name: "Islanda",   lat:  64.96, lon: -19.02, icon: "https://flagcdn.com/w40/is.png" },
   { name: "Dancalia",  lat:  13.87, lon: 40.13, icon: "https://flagcdn.com/w40/et.png" },
   { name: "Bolivia",   lat: -16.29, lon: -63.59, icon: "https://flagcdn.com/w40/bo.png" },
-  { name: "Cile",      lat: -35.68, lon: -71.54, icon: "https://flagcdn.com/w40/cl.png" }
+  { name: "Cile",      lat: -35.68, lon: -71.54, icon: "https://flagcdn.com/w40/cl.png" },
+  { name: "Turchia",   lat: 39.0, lon: 35.0, icon: "https://flagcdn.com/w40/tr.png" }
 ];
 
 flags.forEach(f => {
@@ -290,6 +310,7 @@ addCountry(finlandiasvezia);
 addCountry(islandabreve);
 addCountry(dancalia);
 addCountry(boliviacile);
+addCountry(istanbulcappadocia);
 
 // adatta la vista a tutto quando ha finito di caricare (piccolo delay)
 setTimeout(() => {
