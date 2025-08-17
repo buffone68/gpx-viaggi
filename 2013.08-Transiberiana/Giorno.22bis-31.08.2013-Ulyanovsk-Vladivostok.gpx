@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gpx version="1.1" creator="ChatGPT" xmlns="http://www.topografix.com/GPX/1/1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd">
+  <metadata><name>Giorno.22bis-31.08.2013-Ulyanovsk-Vladivostok</name></metadata>
+  <trk>
+    <name>Giorno.22bis-31.08.2013-Ulyanovsk-Vladivostok</name>
+    <trkseg>
+      <trkpt lat="54.328200" lon="48.386600"><time>2013-08-31T08:00:00Z</time></trkpt>
+      <trkpt lat="53.767565" lon="52.561545"><time>2013-08-31T08:24:00Z</time></trkpt>
+      <trkpt lat="53.206930" lon="56.736490"><time>2013-08-31T08:48:00Z</time></trkpt>
+      <trkpt lat="52.646295" lon="60.911435"><time>2013-08-31T09:12:00Z</time></trkpt>
+      <trkpt lat="52.085660" lon="65.086380"><time>2013-08-31T09:36:00Z</time></trkpt>
+      <trkpt lat="51.525025" lon="69.261325"><time>2013-08-31T10:00:00Z</time></trkpt>
+      <trkpt lat="50.964390" lon="73.436270"><time>2013-08-31T10:24:00Z</time></trkpt>
+      <trkpt lat="50.403755" lon="77.611215"><time>2013-08-31T10:48:00Z</time></trkpt>
+      <trkpt lat="49.843120" lon="81.786160"><time>2013-08-31T11:12:00Z</time></trkpt>
+      <trkpt lat="49.282485" lon="85.961105"><time>2013-08-31T11:36:00Z</time></trkpt>
+      <trkpt lat="48.721850" lon="90.136050"><time>2013-08-31T12:00:00Z</time></trkpt>
+      <trkpt lat="48.161215" lon="94.310995"><time>2013-08-31T12:24:00Z</time></trkpt>
+      <trkpt lat="47.600580" lon="98.485940"><time>2013-08-31T12:48:00Z</time></trkpt>
+      <trkpt lat="47.039945" lon="102.660885"><time>2013-08-31T13:12:00Z</time></trkpt>
+      <trkpt lat="46.479310" lon="106.835830"><time>2013-08-31T13:36:00Z</time></trkpt>
+      <trkpt lat="45.918675" lon="111.010775"><time>2013-08-31T14:00:00Z</time></trkpt>
+      <trkpt lat="45.358040" lon="115.185720"><time>2013-08-31T14:24:00Z</time></trkpt>
+      <trkpt lat="44.797405" lon="119.360665"><time>2013-08-31T14:48:00Z</time></trkpt>
+      <trkpt lat="44.236770" lon="123.535610"><time>2013-08-31T15:12:00Z</time></trkpt>
+      <trkpt lat="43.676135" lon="127.710555"><time>2013-08-31T15:36:00Z</time></trkpt>
+      <trkpt lat="43.115500" lon="131.885500"><time>2013-08-31T16:00:00Z</time></trkpt>
+    </trkseg>
+  </trk>
+</gpx>
