@@ -2,7 +2,7 @@
 <html lang="it">
 <head>
   <meta charset="utf-8" />
-  <title>Tutti i viaggi – GPX (solo tracciati)</title>
+  <title>Tutti i viaggi – GPX (solo tracciati, colore unico)</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <!-- Leaflet + Leaflet-GPX -->
@@ -29,11 +29,19 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
 }).addTo(map);
 
 /* =======================
+   COLORE UNICO PER TUTTE LE TRACCE
+   (cambia qui per modificare il colore)
+   ======================= */
+const LINE_COLOR = '#e41a1c'; // rosso
+const LINE_WEIGHT = 3.5;
+const LINE_OPACITY = 0.95;
+
+/* =======================
    LISTE GPX PER STATO
    (aggiungi qui altri paesi copiando lo schema)
    ======================= */
 
-// NAMIBIA (rosso)
+// NAMIBIA
 const namibia = [
   'https://raw.githubusercontent.com/buffone68/gpx-viaggi/refs/heads/main/2025.07-Namibia/2025-07-28-Giorno-01-Namibia.GPX',
   'https://raw.githubusercontent.com/buffone68/gpx-viaggi/refs/heads/main/2025.07-Namibia/2025-07-29-Giorno-02-Namibia.GPX',
@@ -51,7 +59,7 @@ const namibia = [
   'https://raw.githubusercontent.com/buffone68/gpx-viaggi/refs/heads/main/2025.07-Namibia/2025-08-10-Giorno-14-Namibia.GPX'
 ];
 
-// UGANDA (blu)
+// UGANDA
 const uganda = [
   'https://raw.githubusercontent.com/buffone68/gpx-viaggi/refs/heads/main/2024.10-Uganda-Scimpanzè/2024-10-24-Giorno-01-Uganda-Scimpanzè.GPX',
   'https://raw.githubusercontent.com/buffone68/gpx-viaggi/refs/heads/main/2024.10-Uganda-Scimpanzè/2024-10-25-Giorno-02-Uganda-Scimpanzè.GPX',
@@ -64,7 +72,7 @@ const uganda = [
   'https://raw.githubusercontent.com/buffone68/gpx-viaggi/refs/heads/main/2024.10-Uganda-Scimpanzè/2024-11-01-Giorno-09-Uganda-Scimpanzè.GPX'
 ];
 
-// SRI LANKA (verde)
+// SRI LANKA
 const srilanka = [
   'https://raw.githubusercontent.com/buffone68/gpx-viaggi/refs/heads/main/2024.04-Sri-Lanka-Solo/2024-04-25-Giorno-01-Sri-Lanka-Solo.GPX',
   'https://raw.githubusercontent.com/buffone68/gpx-viaggi/refs/heads/main/2024.04-Sri-Lanka-Solo/2024-04-26-Giorno-02-Sri-Lanka-Solo.GPX',
@@ -78,7 +86,9 @@ const srilanka = [
   'https://raw.githubusercontent.com/buffone68/gpx-viaggi/refs/heads/main/2024.04-Sri-Lanka-Solo/2024-05-04-Giorno-10-Sri-Lanka-Solo.GPX'
 ];
 
-// === bandierine per ogni viaggio ===
+/* =======================
+   BANDIERINE (restano come sono)
+   ======================= */
 const flags = [
   { name: "Namibia",   lat: -22.56, lon: 17.07, icon: "https://flagcdn.com/w40/na.png" },
   { name: "Uganda",    lat:   1.37, lon: 32.29, icon: "https://flagcdn.com/w40/ug.png" },
@@ -95,51 +105,49 @@ const flags = [
 flags.forEach(f => {
   const flagIcon = L.icon({
     iconUrl: f.icon,
-    iconSize: [30, 20], // dimensione bandiera
-    iconAnchor: [15, 10] // centrata
+    iconSize: [30, 20],
+    iconAnchor: [15, 10]
   });
   L.marker([f.lat, f.lon], { icon: flagIcon })
    .bindTooltip(f.name, {permanent: false, direction: "top"})
    .addTo(map);
 });
-  
+
 /* =======================
-   RENDER DELLE TRACCE (SENZA MARKER)
+   RENDER DELLE TRACCE (COLORE UNICO, SENZA MARKER)
    ======================= */
+const overall = L.latLngBounds();
 
-const overall = L.latLngBounds([]);
-
-function addCountry(files, color) {
+function addCountry(files) {
   files.forEach(url => {
     const g = new L.GPX(url, {
       async: true,
-      // solo linea: no start/end, no waypoints
       marker_options: { startIconUrl: null, endIconUrl: null, shadowUrl: null, wptIconUrls: {} },
-      polyline_options: { color, weight: 3.5, opacity: 0.95 }
+      polyline_options: { color: LINE_COLOR, weight: LINE_WEIGHT, opacity: LINE_OPACITY }
     })
     .on('loaded', e => {
       const b = e.target.getBounds && e.target.getBounds();
       if (b && b.isValid()) overall.extend(b);
-      // al termine del caricamento di tutte le tracce faremo fitBounds (vedi sotto)
     })
     .addTo(map);
   });
 }
 
-// colori per stato
-addCountry(namibia,  '#e41a1c'); // rosso
-addCountry(uganda,   '#377eb8'); // blu
-addCountry(srilanka, '#4daf4a'); // verde
+// aggiungi qui tutti i gruppi: avranno tutti lo stesso colore
+addCountry(namibia);
+addCountry(uganda);
+addCountry(srilanka);
 
-// dopo un attimo, adatta la vista a tutto
-setTimeout(() => { if (overall.isValid()) map.fitBounds(overall, {padding:[20,20]}); }, 1000);
+// adatta la vista a tutto quando ha finito di caricare (piccolo delay)
+setTimeout(() => {
+  if (overall.isValid()) map.fitBounds(overall, {padding:[20,20]});
+}, 1200);
 
 /* =======================
    COME AGGIUNGERE ALTRI STATI
    -----------------------
    1) Crea un array con gli URL raw dei GPX (come sopra).
-   2) Chiama addCountry(mioArray, '#colore').
-   Fatto.
+   2) Chiama addCountry(mioArray). Il colore viene preso da LINE_COLOR.
    ======================= */
 </script>
 </body>
