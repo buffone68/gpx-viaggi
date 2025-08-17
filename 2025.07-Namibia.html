@@ -23,6 +23,25 @@
       box-shadow:0 2px 7px rgba(0,0,0,.2);
     }
 
+    /* === AGGIUNTA: stile per bottone Menu in basso a destra === */
+    .menu-button {
+      position: absolute;
+      bottom: 14px;
+      right: 10px;
+      z-index: 10000;
+      padding: 6px 12px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      background: #fff;
+      cursor: pointer;
+      font: 14px system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;
+      box-shadow: 0 2px 7px rgba(0,0,0,.2);
+      text-decoration: none;
+      color: #000;
+    }
+    .menu-button:hover { background:#f8f8f8; }
+    /* === FINE AGGIUNTA === */
+
     /* Box legenda */
     .legend{
       position:absolute; top:60px; left:10px; background:#fff; padding:10px 12px;
@@ -49,26 +68,6 @@
       .legend{ max-width: 78vw }
       .legend.collapsed{ max-height: 40px }
     }
-
-    /* Bottone Menu in basso a destra */
-    .menu-button {
-      position: absolute;
-      bottom: 14px;
-      right: 10px;
-      z-index: 10000;
-      padding: 6px 12px;
-      border-radius: 8px;
-      border: 1px solid #ccc;
-      background: #fff;
-      cursor: pointer;
-      font: 14px system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;
-      box-shadow: 0 2px 7px rgba(0,0,0,.2);
-      text-decoration: none;
-      color: #000;
-    }
-    .menu-button:hover {
-      background:#f8f8f8;
-    }
   </style>
 </head>
 <body>
@@ -78,8 +77,9 @@
   <!-- Bottone per comprimere/espandere la legenda -->
   <button id="lgToggle" class="legend-toggle" aria-expanded="true">Legenda</button>
 
-  <!-- Bottone per tornare al menu principale -->
+  <!-- === AGGIUNTA: Bottone per tornare al menu principale === -->
   <a href="index.html" class="menu-button">🏠 Menu</a>
+  <!-- === FINE AGGIUNTA === -->
 
   <!-- Legenda -->
   <div class="legend" id="legend">
@@ -87,7 +87,31 @@
   </div>
 
 <script>
-/* qui rimane invariato tutto il tuo JS */
+/* =======================
+   CONFIG
+   ======================= */
+
+// (Opzionale) se vuoi Mapbox al posto di OSM/Carto/Esri, metti qui il token
+const MB_TOKEN = ''; // es: 'pk.eyJ1Ijoi…'  — se vuoto usa solo OSM/Carto/Esri
+
+// Link dei GPX (in ordine cronologico)
+const files = [
+  'https://raw.githubusercontent.com/buffone68/gpx-viaggi/refs/heads/main/2025.07-Namibia/2025-07-28-Giorno-01-Namibia.GPX',
+  'https://raw.githubusercontent.com/buffone68/gpx-viaggi/refs/heads/main/2025.07-Namibia/2025-07-29-Giorno-02-Namibia.GPX',
+  'https://raw.githubusercontent.com/buffone68/gpx-viaggi/refs/heads/main/2025.07-Namibia/2025-07-30-Giorno-03-Namibia.GPX',
+  'https://raw.githubusercontent.com/buffone68/gpx-viaggi/refs/heads/main/2025.07-Namibia/2025-07-31-Giorno-04-Namibia.GPX',
+  'https://raw.githubusercontent.com/buffone68/gpx-viaggi/refs/heads/main/2025.07-Namibia/2025-08-01-Giorno-05-Namibia.GPX',
+  'https://raw.githubusercontent.com/buffone68/gpx-viaggi/refs/heads/main/2025.07-Namibia/2025-08-02-Giorno-06-Namibia.GPX',
+  'https://raw.githubusercontent.com/buffone68/gpx-viaggi/refs/heads/main/2025.07-Namibia/2025-08-03-Giorno-07-Namibia.GPX',
+  'https://raw.githubusercontent.com/buffone68/gpx-viaggi/refs/heads/main/2025.07-Namibia/2025-08-04-Giorno-08-Namibia.GPX',
+  'https://raw.githubusercontent.com/buffone68/gpx-viaggi/refs/heads/main/2025.07-Namibia/2025-08-05-Giorno-09-Namibia.GPX',
+  'https://raw.githubusercontent.com/buffone68/gpx-viaggi/refs/heads/main/2025.07-Namibia/2025-08-06-Giorno-10-Namibia.GPX',
+  'https://raw.githubusercontent.com/buffone68/gpx-viaggi/refs/heads/main/2025.07-Namibia/2025-08-07-Giorno-11-Namibia.GPX',
+  'https://raw.githubusercontent.com/buffone68/gpx-viaggi/refs/heads/main/2025.07-Namibia/2025-08-08-Giorno-12-Namibia.GPX',
+  'https://raw.githubusercontent.com/buffone68/gpx-viaggi/refs/heads/main/2025.07-Namibia/2025-08-09-Giorno-13-Namibia.GPX',
+  'https://raw.githubusercontent.com/buffone68/gpx-viaggi/refs/heads/main/2025.07-Namibia/2025-08-10-Giorno-14-Namibia.GPX'
+];
+...
 </script>
 </body>
 </html>
