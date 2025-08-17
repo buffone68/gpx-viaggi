@@ -135,9 +135,10 @@ const endIconUrl = 'data:image/svg+xml;utf8,' + encodeURIComponent(
   
 const map = L.map('map', { zoomControl: true });
   
+// Inquadra Svezia + Finlandia
 map.fitBounds([
-  [-28.9, 11.5],   // sud-ovest Namibia
-  [-16.9, 25.3]    // nord-est Namibia
+  [55.0, 10.0],   // sud-ovest (vicino Copenaghen / Skåne)
+  [71.5, 32.0]    // nord-est (Lapponia, oltre Kirkenes fino a confine russo)
 ]);
 
 // OSM
