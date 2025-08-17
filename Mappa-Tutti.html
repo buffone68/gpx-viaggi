@@ -245,6 +245,13 @@ const istanbulcappadocia = [
   'https://raw.githubusercontent.com/buffone68/gpx-viaggi/refs/heads/main/2019.04-Istanbul-Cappadocia/2019-05-04-Giorno-14-Istanbul-Cappadocia.gpx',
   'https://raw.githubusercontent.com/buffone68/gpx-viaggi/refs/heads/main/2019.04-Istanbul-Cappadocia/2019-05-05-Giorno-15-Istanbul-Cappadocia.gpx'
 ];
+
+
+
+// LA VIA DEL RITORNO
+const laviadelritorno = [
+  'https://raw.githubusercontent.com/buffone68/gpx-viaggi/refs/heads/main/2010.08-La-Via-Del-Ritorno/2010.08-La-Via-Del-Ritorno-Simulato.gpx'
+];
   
 /* =======================
    BANDIERINE (restano come sono)
@@ -263,7 +270,12 @@ const flags = [
   { name: "Dancalia",  lat:  13.87, lon: 40.13, icon: "https://flagcdn.com/w40/et.png" },
   { name: "Bolivia",   lat: -16.29, lon: -63.59, icon: "https://flagcdn.com/w40/bo.png" },
   { name: "Cile",      lat: -35.68, lon: -71.54, icon: "https://flagcdn.com/w40/cl.png" },
-  { name: "Turchia",   lat: 39.0, lon: 35.0, icon: "https://flagcdn.com/w40/tr.png" }
+  { name: "Cina",        lat: 35.9, lon: 104.2, icon: "https://flagcdn.com/w40/cn.png" },
+  { name: "Kazakhstan",  lat: 48.0, lon: 67.0,  icon: "https://flagcdn.com/w40/kz.png" },
+  { name: "Uzbekistan",  lat: 41.4, lon: 64.6,  icon: "https://flagcdn.com/w40/uz.png" },
+  { name: "Turkmenistan",lat: 39.1, lon: 59.4,  icon: "https://flagcdn.com/w40/tm.png" },
+  { name: "Iran",        lat: 32.4, lon: 53.7,  icon: "https://flagcdn.com/w40/ir.png" },
+  { name: "Turchia",     lat: 39.0, lon: 35.0,  icon: "https://flagcdn.com/w40/tr.png" }
 ];
 
 flags.forEach(f => {
@@ -310,6 +322,7 @@ addCountry(islandabreve);
 addCountry(dancalia);
 addCountry(boliviacile);
 addCountry(istanbulcappadocia);
+addCountry(laviadelritorno);
 
 // adatta la vista a tutto quando ha finito di caricare (piccolo delay)
 setTimeout(() => {
